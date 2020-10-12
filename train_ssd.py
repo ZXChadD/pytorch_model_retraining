@@ -69,6 +69,7 @@ training = config_file["TRAININGINFO"]
 sgd = config_file["SGD"]
 scheduler = config_file["SCHEDULER"]
 train_loop = config_file["TRAINLOOP"]
+min_val_loss = train_loop.getint("min_val_loss")
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -261,7 +262,7 @@ if __name__ == '__main__':
             net.save(model_path)
             logging.info(f"Saved model {model_path}")
 
-            if val_loss < train_loop.getint("min_val_loss"):
+            if val_loss < min_val_loss:
                 # Saving the model
                 if min_val_loss > val_loss:
                     min_val_loss = val_loss
