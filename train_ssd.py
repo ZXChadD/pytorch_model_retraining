@@ -266,7 +266,7 @@ if __name__ == '__main__':
                 # Saving the model
                 if min_val_loss > val_loss:
                     min_val_loss = val_loss
-                    logging.info('Min loss %0.2f' % min_loss)
+                    logging.info('Min loss %0.2f' % min_val_loss)
 
             else:
                 # Check early stopping condition

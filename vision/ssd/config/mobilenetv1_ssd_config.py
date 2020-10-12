@@ -2,7 +2,6 @@ import numpy as np
 
 from vision.utils.box_utils import SSDSpec, SSDBoxSizes, generate_ssd_priors
 
-
 image_size = 512
 image_mean = np.array([127, 127, 127]) # RGB layout
 image_std = 128.0
