@@ -86,7 +86,7 @@ if args.use_cuda and torch.cuda.is_available():
     logging.info("Use Cuda.")
 
 ####### Writer for tensorboard #######
-writer = SummaryWriter('logs')
+writer = SummaryWriter('../logs')
 
 
 def train(loader, net, criterion, optimizer, device, debug_steps=100, epoch=-1):
@@ -263,6 +263,6 @@ if __name__ == '__main__':
                 f"Validation Regression Loss {val_regression_loss:.4f}, " +
                 f"Validation Classification Loss: {val_classification_loss:.4f}"
             )
-            model_path = os.path.join("saved_models", f"{args.net}-Epoch-{epoch}-Loss-{val_loss}.pth")
+            model_path = os.path.join("../saved_models", f"{args.net}-Epoch-{epoch}-Loss-{val_loss}.pth")
             net.save(model_path)
             logging.info(f"Saved model {model_path}")
