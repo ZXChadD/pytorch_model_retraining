@@ -90,7 +90,6 @@ def train(loader, net, criterion, optimizer, device, debug_steps, epoch=-1):
     running_regression_loss = 0.0
     running_classification_loss = 0.0
     for i, data in enumerate(loader):
-        print(i)
         images, boxes, labels = data
         images = images.to(device)
         boxes = boxes.to(device)
@@ -246,9 +245,9 @@ if __name__ == '__main__':
     logging.info(f"Start training from epoch {last_epoch + 1}.")
     for epoch in range(last_epoch + 1, train_loop.getint("num_epochs")):
         print("")
-        scheduler.step()
         train(train_loader, net, criterion, optimizer,
               device=DEVICE, debug_steps=train_loop.getint("debug_steps"), epoch=epoch)
+        scheduler.step()
 
         if epoch % train_loop.getint("validation_epochs") == 0 or epoch == train_loop.getint("num_epochs") - 1:
             val_loss, val_regression_loss, val_classification_loss = test(val_loader, net, criterion, DEVICE)
