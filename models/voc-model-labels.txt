@@ -1,0 +1,9 @@
+BACKGROUND
+airplane
+automobile
+bird
+cat
+deer
+dog
+frog
+ship

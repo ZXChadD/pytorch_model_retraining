@@ -1,7 +1,6 @@
 .DS_Store
 .idea
 log
-models
 
 eval_results/
 
