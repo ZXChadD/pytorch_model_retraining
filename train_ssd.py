@@ -59,8 +59,6 @@ parser.add_argument('--scheduler', default="multi-step", type=str,
                     help="Scheduler for SGD. It can one of multi-step and cosine")
 
 # Train params
-parser.add_argument('--debug_steps', default=100, type=int,
-                    help='Set the debug log output frequency.')
 parser.add_argument('--use_cuda', default=True, type=str2bool,
                     help='Use CUDA to train model')
 
@@ -78,7 +76,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO,
 args = parser.parse_args()
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() and args.use_cuda else "cpu")
 
-if args.use_cuda and torch.cuda.is_available():
+if torch.cuda.is_available():
     torch.backends.cudnn.benchmark = True
     logging.info("Use Cuda.")
 
@@ -86,7 +84,7 @@ if args.use_cuda and torch.cuda.is_available():
 writer = SummaryWriter('../logs')
 
 
-def train(loader, net, criterion, optimizer, device, debug_steps=100, epoch=-1):
+def train(loader, net, criterion, optimizer, device, debug_steps, epoch=-1):
     net.train(True)
     running_loss = 0.0
     running_regression_loss = 0.0
@@ -250,7 +248,7 @@ if __name__ == '__main__':
         print("")
         scheduler.step()
         train(train_loader, net, criterion, optimizer,
-              device=DEVICE, debug_steps=args.debug_steps, epoch=epoch)
+              device=DEVICE, debug_steps=train_loop.getint("debug_steps"), epoch=epoch)
 
         if epoch % train_loop.getint("validation_epochs") == 0 or epoch == train_loop.getint("num_epochs") - 1:
             val_loss, val_regression_loss, val_classification_loss = test(val_loader, net, criterion, DEVICE)
