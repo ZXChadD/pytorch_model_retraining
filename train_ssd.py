@@ -18,7 +18,6 @@ from vision.ssd.config import mobilenetv1_ssd_config
 from vision.ssd.data_preprocessing import TrainAugmentation, TestTransform
 from torch.utils.tensorboard import SummaryWriter
 
-
 parser = argparse.ArgumentParser(
     description='Single Shot MultiBox Detector Training With Pytorch')
 
@@ -80,11 +79,12 @@ if torch.cuda.is_available():
     torch.backends.cudnn.benchmark = True
     logging.info("Use Cuda.")
 
-####### Writer for tensorboard #######
-writer = SummaryWriter('../logs')
-
 
 def train(loader, net, criterion, optimizer, device, debug_steps, epoch=-1):
+
+    ####### Writer for tensorboard #######
+    writer = SummaryWriter('../logs')
+
     net.train(True)
     running_loss = 0.0
     running_regression_loss = 0.0
@@ -120,8 +120,8 @@ def train(loader, net, criterion, optimizer, device, debug_steps, epoch=-1):
             running_classification_loss = 0.0
 
             writer.add_scalar('Average loss',
-                            avg_loss,
-                            epoch)
+                              avg_loss,
+                              epoch)
 
 
 def test(loader, net, criterion, device):
@@ -260,3 +260,15 @@ if __name__ == '__main__':
             model_path = os.path.join("../saved_models", f"{args.net}-Epoch-{epoch}-Loss-{val_loss}.pth")
             net.save(model_path)
             logging.info(f"Saved model {model_path}")
+
+            if val_loss < train_loop.getint("min_val_loss"):
+                # Saving the model
+                if min_val_loss > val_loss:
+                    min_val_loss = val_loss
+                    logging.info('Min loss %0.2f' % min_loss)
+
+            else:
+                # Check early stopping condition
+                logging.info('Early stopping!')
+                break
+
