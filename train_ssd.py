@@ -64,9 +64,6 @@ parser.add_argument('--debug_steps', default=100, type=int,
 parser.add_argument('--use_cuda', default=True, type=str2bool,
                     help='Use CUDA to train model')
 
-parser.add_argument('--checkpoint_folder', default='models/',
-                    help='Directory for saving checkpoint models')
-
 import configparser
 
 config_file = configparser.ConfigParser()
@@ -171,7 +168,7 @@ if __name__ == '__main__':
     for dataset_path in args.datasets:
         dataset = VOCDataset(dataset_path, transform=train_transform,
                              target_transform=target_transform)
-        label_file = os.path.join(args.checkpoint_folder, "voc-model-labels.txt")
+        label_file = os.path.join("../models", "voc-model-labels.txt")
         store_labels(label_file, dataset.class_names)
         num_classes = len(dataset.class_names)
 
