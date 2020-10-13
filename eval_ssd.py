@@ -146,10 +146,10 @@ def evaluate_ssd(trained_model):
             new_boxes = []
             new_labels = []
             new_probs = []
-            print("process image", i)
+            # print("process image", i)
             timer.start("Load Image")
             image = dataset.get_image(i)
-            print("Load Image: {:4f} seconds.".format(timer.end("Load Image")))
+            # print("Load Image: {:4f} seconds.".format(timer.end("Load Image")))
             timer.start("Predict")
             boxes, labels, probs = predictor.predict(image)
 
