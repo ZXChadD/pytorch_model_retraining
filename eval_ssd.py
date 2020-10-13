@@ -101,6 +101,9 @@ def compute_average_precision_per_class(num_true_cases, gt_boxes, difficult_case
     false_positive = false_positive.cumsum()
     precision = true_positive / (true_positive + false_positive)
     recall = true_positive / num_true_cases
+
+    # print(precision)
+    # print(recall)
     if use_2007_metric:
         return measurements.compute_voc2007_average_precision(precision, recall)
     else:
@@ -175,5 +178,123 @@ def evaluate_ssd(trained_model):
 
     print(f"\nAverage Precision Across All Classes:{sum(aps) / len(aps)}")
 
+    # def GetPDFA(self, boundingboxes, IOUThreshold=0.5):
+    #
+    #     # Actual predictions
+    #     class_actual = pandas.Series([], name='Actual')
+    #
+    #     # Prediction
+    #     class_pred = pandas.Series([], name='Predicted')
+    #
+    #     # List with all ground truths (Ex: [imageName,class,confidence=1, (bb coordinates XYX2Y2)])
+    #     groundTruths = []
+    #     # List with all detections (Ex: [imageName,class,confidence,(bb coordinates XYX2Y2)])
+    #     detections = []
+    #     # Get all images
+    #     images = []
+    #     pd = 0
+    #     low = 0
+    #     high = 1
+    #     count = 0
+    #
+    #     # Loop through all bounding boxes and separate them into GTs and detections
+    #     for bb in boundingboxes.getBoundingBoxes():
+    #         # [imageName, class, confidence, (bb coordinates XYX2Y2)]
+    #         if bb.getBBType() == BBType.GroundTruth:
+    #             groundTruths.append([
+    #                 bb.getImageName(),
+    #                 bb.getClassId(), 1,
+    #                 bb.getAbsoluteBoundingBox(BBFormat.XYX2Y2)
+    #             ])
+    #         else:
+    #             detections.append([
+    #                 bb.getImageName(),
+    #                 bb.getClassId(),
+    #                 bb.getConfidence(),
+    #                 bb.getAbsoluteBoundingBox(BBFormat.XYX2Y2)
+    #             ])
+    #
+    #         # get class
+    #         if bb.getImageName() not in images:
+    #             images.append(bb.getImageName())
+    #
+    #     images = sorted(images)
+    #
+    #     while (pd != 0.90):
+    #         if count > 20:
+    #             break
+    #         else:
+    #             count+=1
+    #         # Get count
+    #         total_fp = 0
+    #         total_tp = 0
+    #
+    #         if (pd == 0):
+    #             confidence_level = 0.75
+    #         elif (pd < 0.90):
+    #             high = confidence_level
+    #             confidence_level = (high + low) / 2
+    #         else:
+    #             low = confidence_level
+    #             confidence_level = (high + low) / 2
+    #
+    #         for i in images:
+    #             # Get only detection of class c
+    #             dects = []
+    #             [dects.append(d) for d in detections if d[0] == i and d[2] >= confidence_level]
+    #             # Get only ground truths of class c
+    #             gts = []
+    #             [gts.append(g) for g in groundTruths if g[0] == i]
+    #
+    #             # sort detections by decreasing confidence
+    #             dects = sorted(dects, key=lambda conf: conf[2], reverse=True)
+    #             TP = np.zeros(len(dects))
+    #             FP = np.zeros(len(dects))
+    #
+    #             # create dictionary with amount of gts for each image
+    #             det = Counter([cc[0] for cc in gts])
+    #
+    #             for key, val in det.items():
+    #                 det[key] = np.zeros(val)
+    #
+    #             # Loop through detections
+    #             for d in range(len(dects)):
+    #
+    #                 # Find ground truth image
+    #                 iouMax = sys.float_info.min
+    #
+    #                 # Loop through ground truths
+    #                 for j in range(len(gts)):
+    #                     # print('Ground truth gt => %s' % (gts[j][3],))
+    #                     iou = Evaluator.iou(dects[d][3], gts[j][3])
+    #                     if iou > iouMax:
+    #                         iouMax = iou
+    #                         jmax = j
+    #
+    #                 # Assign detection as true positive/don't care/false positive
+    #                 if iouMax >= IOUThreshold:
+    #                     if det[dects[d][0]][jmax] == 0:
+    #                         TP[d] = 1  # count as true positive
+    #                         det[dects[d][0]][jmax] = 1  # flag as already 'seen'
+    #                         # print("TP")
+    #
+    #                     else:
+    #                         FP[d] = 1  # count as false positive
+    #                         # print("FP")
+    #
+    #                 # - A detected "cat" is overlaped with a GT "cat" with IOU >= IOUThreshold.
+    #                 else:
+    #                     FP[d] = 1  # count as false positive
+    #                     # print("FP")
+    #
+    #             total_tp += np.count_nonzero(TP == 1)
+    #             total_fp += np.count_nonzero(FP == 1)
+    #
+    #         pd = total_tp / len(groundTruths)
+    #         print(confidence_level)
+    #         print("PD: %.2f" % pd)
+    #         print("FAR: %.2f" % (total_fp / len(images)))
+    #         print(total_fp)
 
-evaluate_ssd("mb2-ssd-lite-Epoch-130-Loss-2.4792087078094482.pth")
+
+# evaluate_ssd("mb2-ssd-lite-Epoch-140-Loss-2.1616919381277904.pth")

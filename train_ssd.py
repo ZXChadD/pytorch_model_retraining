@@ -3,11 +3,12 @@ import os
 import logging
 import sys
 import itertools
-
+import re
 import torch
 from torch.utils.data import DataLoader, ConcatDataset
 from torch.optim.lr_scheduler import CosineAnnealingLR, MultiStepLR
 import glob
+import eval_ssd
 
 from vision.utils.misc import str2bool, Timer, freeze_net_layers, store_labels
 from vision.ssd.ssd import MatchPrior
@@ -35,12 +36,12 @@ parser.add_argument('--mb2_width_mult', default=1.0, type=float,
 # Params for SGD
 parser.add_argument('--lr', '--learning-rate', default=1e-3, type=float,
                     help='initial learning rate')
-parser.add_argument('--momentum', default=0.9, type=float,
-                    help='Momentum value for optim')
-parser.add_argument('--weight_decay', default=5e-4, type=float,
-                    help='Weight decay for SGD')
-parser.add_argument('--gamma', default=0.1, type=float,
-                    help='Gamma update for SGD')
+# parser.add_argument('--momentum', default=0.9, type=float,
+#                     help='Momentum value for optim')
+# parser.add_argument('--weight_decay', default=5e-4, type=float,
+#                     help='Weight decay for SGD')
+# parser.add_argument('--gamma', default=0.1, type=float,
+#                     help='Gamma update for SGD')
 parser.add_argument('--base_net_lr', default=None, type=float,
                     help='initial learning rate for base net.')
 parser.add_argument('--extra_layers_lr', default=None, type=float,
@@ -72,6 +73,7 @@ train_loop = config_file["TRAINLOOP"]
 min_val_loss = train_loop.getint("min_val_loss")
 epoch_limit = train_loop.getint("epoch_limit")
 count = train_loop.getint("count")
+all_files = []
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -238,20 +240,6 @@ if __name__ == '__main__':
     logging.info(f"Learning rate: {args.lr}, Base net learning rate: {base_net_lr}, "
                  + f"Extra Layers learning rate: {extra_layers_lr}.")
 
-    # if args.scheduler == 'multi-step':
-    #     logging.info("Uses MultiStepLR scheduler.")
-    #     milestones = [int(v.strip()) for v in args.milestones.split(",")]
-    #     scheduler = MultiStepLR(optimizer, milestones=milestones,
-    #                             gamma=0.1, last_epoch=last_epoch)
-    # elif args.scheduler == 'cosine':
-    #     logging.info("Uses CosineAnnealingLR scheduler.")
-    #     scheduler = CosineAnnealingLR(optimizer, scheduler.getfloat("t_max"), last_epoch=last_epoch)
-    #     print(sgd.getfloat("t_max"))
-    # else:
-    #     logging.fatal(f"Unsupported Scheduler: {args.scheduler}.")
-    #     parser.print_help(sys.stderr)
-    #     sys.exit(1)
-
     logging.info("Uses CosineAnnealingLR scheduler.")
     scheduler = CosineAnnealingLR(optimizer, scheduler.getfloat("t_max"), last_epoch=last_epoch)
     # print(sgd.getfloat("t_max"))
@@ -272,7 +260,7 @@ if __name__ == '__main__':
                 f"Validation Regression Loss {val_regression_loss:.4f}, " +
                 f"Validation Classification Loss: {val_classification_loss:.4f}"
             )
-            model_path = os.path.join("../saved_models", f"{args.net}-Epoch-{epoch}-Loss-{val_loss}.pth")
+            model_path = os.path.join("../saved_models", f"Epoch-{epoch}-Loss-{val_loss}.pth")
             net.save(model_path)
             logging.info(f"Saved model {model_path}")
 
@@ -283,12 +271,24 @@ if __name__ == '__main__':
                     logging.info('Min loss %0.2f' % min_val_loss)
                     count = 0
             else:
-                if(count == epoch_limit):
+                if (count == epoch_limit):
                     # Check early stopping condition
                     logging.info('Early stopping!')
                     break
                 else:
                     count += 1
 
-    best_models = glob.glob("../saved_models" + '/*.pth')
-    print(best_models)
+    ####### Evaluating Process #######
+    files = glob.glob("../saved_models" + '/*.pth')
+    for file in files:
+        current_file = re.findall('[^-]+(?=.pth)', file)
+        all_files.append(float(current_file[0]))
+
+    min_file = min(all_files)
+
+    for x in files:
+        if str(min_file) in x:
+            min_file = x
+
+    logging.info(f"Evaluating model {min_file}.")
+    eval_ssd.evaluate_ssd(min_file)
