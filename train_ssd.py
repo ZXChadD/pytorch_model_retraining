@@ -80,12 +80,11 @@ if torch.cuda.is_available():
     torch.backends.cudnn.benchmark = True
     logging.info("Use Cuda.")
 
+####### Writer for tensorboard #######
+writer = SummaryWriter('../logs')
+
 
 def train(loader, net, criterion, optimizer, device, debug_steps, epoch=-1):
-
-    ####### Writer for tensorboard #######
-    writer = SummaryWriter('../logs')
-
     net.train(True)
     running_loss = 0.0
     running_regression_loss = 0.0
@@ -150,6 +149,7 @@ def test(loader, net, criterion, device):
 
 
 if __name__ == '__main__':
+
     timer = Timer()
     create_net = lambda num: create_mobilenetv2_ssd_lite(num, width_mult=args.mb2_width_mult)
     config = mobilenetv1_ssd_config
@@ -272,4 +272,3 @@ if __name__ == '__main__':
                 # Check early stopping condition
                 logging.info('Early stopping!')
                 break
-
