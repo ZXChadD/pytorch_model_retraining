@@ -80,11 +80,8 @@ if torch.cuda.is_available():
     torch.backends.cudnn.benchmark = True
     logging.info("Use Cuda.")
 
-####### Writer for tensorboard #######
-writer = SummaryWriter('../logs')
 
-
-def train(loader, net, criterion, optimizer, device, debug_steps, epoch=-1):
+def train(writer, loader, net, criterion, optimizer, device, debug_steps, epoch=-1):
     net.train(True)
     running_loss = 0.0
     running_regression_loss = 0.0
@@ -122,9 +119,15 @@ def train(loader, net, criterion, optimizer, device, debug_steps, epoch=-1):
             writer.add_scalar('Average loss',
                               avg_loss,
                               epoch)
+            writer.add_scalar('Regression loss',
+                              avg_reg_loss,
+                              epoch)
+            writer.add_scalar('Classification loss',
+                              avg_clf_loss,
+                              epoch)
 
 
-def test(loader, net, criterion, device):
+def test(writer, loader, net, criterion, device):
     net.eval()
     running_loss = 0.0
     running_regression_loss = 0.0
@@ -149,6 +152,9 @@ def test(loader, net, criterion, device):
 
 
 if __name__ == '__main__':
+
+    ####### Writer for tensorboard #######
+    writer = SummaryWriter('../logs')
 
     timer = Timer()
     create_net = lambda num: create_mobilenetv2_ssd_lite(num, width_mult=args.mb2_width_mult)
@@ -246,12 +252,12 @@ if __name__ == '__main__':
     logging.info(f"Start training from epoch {last_epoch + 1}.")
     for epoch in range(last_epoch + 1, train_loop.getint("num_epochs")):
         print("")
-        train(train_loader, net, criterion, optimizer,
+        train(writer, train_loader, net, criterion, optimizer,
               device=DEVICE, debug_steps=train_loop.getint("debug_steps"), epoch=epoch)
         scheduler.step()
 
         if epoch % train_loop.getint("validation_epochs") == 0 or epoch == train_loop.getint("num_epochs") - 1:
-            val_loss, val_regression_loss, val_classification_loss = test(val_loader, net, criterion, DEVICE)
+            val_loss, val_regression_loss, val_classification_loss = test(writer, val_loader, net, criterion, DEVICE)
             logging.info(
                 f"Epoch: {epoch}, " +
                 f"Validation Loss: {val_loss:.4f}, " +
