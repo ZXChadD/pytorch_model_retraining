@@ -224,4 +224,4 @@ def evaluate_ssd(trained_model):
         print("FAR: %.2f" % FAR)
 
 
-evaluate_ssd("mb2-ssd-lite-Epoch-140-Loss-2.1616919381277904.pth")
+# evaluate_ssd("mb2-ssd-lite-Epoch-140-Loss-2.1616919381277904.pth")
