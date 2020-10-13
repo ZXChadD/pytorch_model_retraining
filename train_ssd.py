@@ -70,6 +70,8 @@ sgd = config_file["SGD"]
 scheduler = config_file["SCHEDULER"]
 train_loop = config_file["TRAINLOOP"]
 min_val_loss = train_loop.getint("min_val_loss")
+epoch_limit = train_loop.getint("epoch_limit")
+count = train_loop.getint("count")
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -273,8 +275,11 @@ if __name__ == '__main__':
                 if min_val_loss > val_loss:
                     min_val_loss = val_loss
                     logging.info('Min loss %0.2f' % min_val_loss)
-
+                    count = 0
             else:
-                # Check early stopping condition
-                logging.info('Early stopping!')
-                break
+                if(count == epoch_limit):
+                    # Check early stopping condition
+                    logging.info('Early stopping!')
+                    break
+                else:
+                    count += 1
