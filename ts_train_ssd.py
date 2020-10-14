@@ -275,6 +275,7 @@ if __name__ == '__main__':
 
         logging.info(f"Evaluating model {min_file}.")
         new_FAR = eval_ssd.evaluate_ssd(min_file)
+        logging.info(f"Copying file {min_file}.")
         copyfile(min_file, "../models")
 
         if new_FAR < current_FAR:

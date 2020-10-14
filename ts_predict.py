@@ -40,13 +40,13 @@ def predict(trained_model, iteration):
         boxes = boxes.numpy()
 
         for x in range(len(probs)):
-            name_of_object = label_names[labels[x]]
-            x1 = boxes[x][0]
-            y1 = boxes[x][1]
-            x2 = boxes[x][2]
-            y2 = boxes[x][3]
-
-            writer.addObject(name_of_object, x1, y1, x2, y2)
+            if probs[x] > 0.3:
+                name_of_object = label_names[labels[x]]
+                x1 = boxes[x][0]
+                y1 = boxes[x][1]
+                x2 = boxes[x][2]
+                y2 = boxes[x][3]
+                writer.addObject(name_of_object, x1, y1, x2, y2)
 
         ####### save pascal voc file #######
         writer.save(
