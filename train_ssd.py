@@ -9,7 +9,6 @@ from torch.utils.data import DataLoader, ConcatDataset
 from torch.optim.lr_scheduler import CosineAnnealingLR, MultiStepLR
 import glob
 import eval_ssd
-
 from vision.utils.misc import str2bool, Timer, freeze_net_layers, store_labels
 from vision.ssd.ssd import MatchPrior
 from vision.ssd.mobilenet_v2_ssd_lite import create_mobilenetv2_ssd_lite
@@ -36,12 +35,6 @@ parser.add_argument('--mb2_width_mult', default=1.0, type=float,
 # Params for SGD
 parser.add_argument('--lr', '--learning-rate', default=1e-3, type=float,
                     help='initial learning rate')
-# parser.add_argument('--momentum', default=0.9, type=float,
-#                     help='Momentum value for optim')
-# parser.add_argument('--weight_decay', default=5e-4, type=float,
-#                     help='Weight decay for SGD')
-# parser.add_argument('--gamma', default=0.1, type=float,
-#                     help='Gamma update for SGD')
 parser.add_argument('--base_net_lr', default=None, type=float,
                     help='initial learning rate for base net.')
 parser.add_argument('--extra_layers_lr', default=None, type=float,
@@ -53,17 +46,13 @@ parser.add_argument('--base_net',
 parser.add_argument('--pretrained_ssd', help='Pre-trained base model')
 parser.add_argument('--resume', default=None, type=str,
                     help='Checkpoint state_dict file to resume training from')
-#
-# # Scheduler
-# parser.add_argument('--scheduler', default="multi-step", type=str,
-#                     help="Scheduler for SGD. It can one of multi-step and cosine")
 
 # Train params
 parser.add_argument('--use_cuda', default=True, type=str2bool,
                     help='Use CUDA to train model')
 
+# Config parser
 import configparser
-
 config_file = configparser.ConfigParser()
 config_file.read("config.ini")
 training = config_file["TRAININGINFO"]
@@ -235,8 +224,6 @@ if __name__ == '__main__':
     criterion = MultiboxLoss(config.priors, iou_threshold=0.5, neg_pos_ratio=3,
                              center_variance=0.1, size_variance=0.2, device=DEVICE)
     optimizer = torch.optim.Adam(params, lr=args.lr)
-    # optimizer = torch.optim.SGD(params, lr=args.lr, momentum=args.momentum,
-    #                             weight_decay=args.weight_decay)
     logging.info(f"Learning rate: {args.lr}, Base net learning rate: {base_net_lr}, "
                  + f"Extra Layers learning rate: {extra_layers_lr}.")
 

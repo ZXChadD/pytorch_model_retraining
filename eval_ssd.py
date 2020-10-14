@@ -10,6 +10,7 @@ from vision.ssd.mobilenet_v2_ssd_lite import create_mobilenetv2_ssd_lite, create
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+
 def group_annotation_by_class(dataset):
     true_case_stat = {}
     all_gt_boxes = {}
@@ -120,7 +121,6 @@ def evaluate_ssd(trained_model):
 
     predictor = create_mobilenetv2_ssd_lite_predictor(net, nms_method="hard", device=DEVICE)
 
-
     while PD != 0.90:
 
         results = []
@@ -215,7 +215,6 @@ def evaluate_ssd(trained_model):
 
             PD = all_positives / ground_truths
             FAR = all_false_positives / len(dataset)
-
 
             print(f"\nAverage Precision Across All Classes:{sum(aps) / len(aps)}")
 
