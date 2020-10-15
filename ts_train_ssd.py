@@ -286,8 +286,8 @@ if __name__ == '__main__':
         if new_FAR < current_FAR:
             current_FAR = new_FAR
             iteration_count += 1
-            # pretrained_model_path = "../models/" + min_file_name + ".pth"
-            ts_predict.predict(pretrained_model_path, iteration_count)
+            new_model_path = "../models/" + min_file_name + ".pth"
+            ts_predict.predict(new_model_path, iteration_count)
             logging.info(f"Iteration number: {iteration_count}.")
 
         elif current_FAR < new_FAR:
