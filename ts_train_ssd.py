@@ -73,7 +73,7 @@ count = train_loop.getint("count")
 
 # Teacher Student Retraining Loop
 current_FAR = 100
-iteration_count = 1
+iteration_count = 2
 pretrained_model_path = "../models/mb2-ssd-lite-mp-0_686.pth"
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
@@ -229,7 +229,7 @@ if __name__ == '__main__':
                      + f"Extra Layers learning rate: {extra_layers_lr}.")
 
         logging.info("Uses CosineAnnealingLR scheduler.")
-        scheduler = CosineAnnealingLR(optimizer, scheduler.getfloat("t_max"), last_epoch=last_epoch)
+        scheduler = CosineAnnealingLR(optimizer, 120, last_epoch=last_epoch)
         # print(sgd.getfloat("t_max"))
 
         ####### Training Process #######
