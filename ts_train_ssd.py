@@ -60,6 +60,7 @@ parser.add_argument('--use_cuda', default=True, type=str2bool,
 
 # Config parser
 import configparser
+
 config_file = configparser.ConfigParser()
 config_file.read("config.ini")
 training = config_file["TRAININGINFO"]
@@ -72,8 +73,8 @@ count = train_loop.getint("count")
 
 # Teacher Student Retraining Loop
 current_FAR = 100
-iteration_count = 1
-pretrained_model_path = "../models/Epoch-120-Loss-1.422243544929906.pth"
+iteration_count = 0
+pretrained_model_path = "../models/mb2-ssd-lite-mp-0_686.pth"
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -165,8 +166,12 @@ if __name__ == '__main__':
         logging.info("Prepare training datasets.")
         datasets = []
         for dataset_path in args.datasets:
-            dataset = VOCDataset(iteration_count, dataset_path, transform=train_transform,
-                                 target_transform=target_transform)
+            if dataset_path == "../data/expert":
+                dataset = VOCDataset(-1, dataset_path, transform=train_transform,
+                                     target_transform=target_transform)
+            else:
+                dataset = VOCDataset(iteration_count, dataset_path, transform=train_transform,
+                                     target_transform=target_transform)
             label_file = os.path.join("../models", "voc-model-labels.txt")
             store_labels(label_file, dataset.class_names)
             num_classes = len(dataset.class_names)
@@ -276,12 +281,12 @@ if __name__ == '__main__':
         logging.info(f"Evaluating model {min_file}.")
         new_FAR = eval_ssd.evaluate_ssd(min_file)
         logging.info(f"Copying file {min_file}.")
-        copyfile(min_file, "../models")
+        # copyfile(min_file, "../models")
 
         if new_FAR < current_FAR:
             current_FAR = new_FAR
             iteration_count += 1
-            pretrained_model_path = "../models/" + min_file_name + ".pth"
+            # pretrained_model_path = "../models/" + min_file_name + ".pth"
             ts_predict.predict(pretrained_model_path, iteration_count)
             logging.info(f"Iteration number: {iteration_count}.")
 
