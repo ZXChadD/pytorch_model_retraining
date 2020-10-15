@@ -215,7 +215,7 @@ if __name__ == '__main__':
         ]
 
         logging.info(f"Init from pretrained ssd {pretrained_model_path}")
-        net.init_from_pretrained_ssd(args.pretrained_ssd)
+        net.init_from_pretrained_ssd(pretrained_model_path)
         logging.info(f'Took {timer.end("Load Model"):.2f} seconds to load the model.')
 
         net.to(DEVICE)
