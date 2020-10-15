@@ -72,8 +72,8 @@ count = train_loop.getint("count")
 
 # Teacher Student Retraining Loop
 current_FAR = 100
-iteration_count = 0
-pretrained_model_path = "../models/Epoch-110-Loss-1.7577346393040247.pth"
+iteration_count = 1
+pretrained_model_path = "../models/Epoch-120-Loss-1.422243544929906.pth"
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
