@@ -61,45 +61,48 @@ def load_label_names():
 
 # predict("Epoch-120-Loss-1.422243544929906.pth", 1)
 
-    defiou(boxA, boxB):
-        # if boxes dont intersect
-        if Evaluator._boxesIntersect(boxA, boxB) is False:
-            return 0
-        interArea = Evaluator._getIntersectionArea(boxA, boxB)
-        union = Evaluator._getUnionAreas(boxA, boxB, interArea=interArea)
-        # intersection over union
-        iou = interArea / union
-        assert iou >= 0
-        return iou
+def iou(boxA, boxB):
+    # if boxes dont intersect
+    if boxesIntersect(boxA, boxB) is False:
+        return 0
+    interArea = getIntersectionArea(boxA, boxB)
+    union = getUnionAreas(boxA, boxB, interArea=interArea)
+    # intersection over union
+    iou = interArea / union
+    assert iou >= 0
+    return iou
 
-    # boxA = (Ax1,Ay1,Ax2,Ay2)
-    # boxB = (Bx1,By1,Bx2,By2)
-    def boxesIntersect(boxA, boxB):
-        if boxA[0] > boxB[2]:
-            return False  # boxA is right of boxB
-        if boxB[0] > boxA[2]:
-            return False  # boxA is left of boxB
-        if boxA[3] < boxB[1]:
-            return False  # boxA is above boxB
-        if boxA[1] > boxB[3]:
-            return False  # boxA is below boxB
-        return True
 
-    def getIntersectionArea(boxA, boxB):
-        xA = max(boxA[0], boxB[0])
-        yA = max(boxA[1], boxB[1])
-        xB = min(boxA[2], boxB[2])
-        yB = min(boxA[3], boxB[3])
-        # intersection area
-        return (xB - xA + 1) * (yB - yA + 1)
+# boxA = (Ax1,Ay1,Ax2,Ay2)
+# boxB = (Bx1,By1,Bx2,By2)
+def boxesIntersect(boxA, boxB):
+    if boxA[0] > boxB[2]:
+        return False  # boxA is right of boxB
+    if boxB[0] > boxA[2]:
+        return False  # boxA is left of boxB
+    if boxA[3] < boxB[1]:
+        return False  # boxA is above boxB
+    if boxA[1] > boxB[3]:
+        return False  # boxA is below boxB
+    return True
 
-    def getUnionAreas(boxA, boxB, interArea=None):
-        area_A = getArea(boxA)
-        area_B = Evaluator._getArea(boxB)
-        if interArea is None:
-            interArea = Evaluator._getIntersectionArea(boxA, boxB)
-        return float(area_A + area_B - interArea)
 
-    def getArea(box):
-        return (box[2] - box[0] + 1) * (box[3] - box[1] + 1)
+def getIntersectionArea(boxA, boxB):
+    xA = max(boxA[0], boxB[0])
+    yA = max(boxA[1], boxB[1])
+    xB = min(boxA[2], boxB[2])
+    yB = min(boxA[3], boxB[3])
+    # intersection area
+    return (xB - xA + 1) * (yB - yA + 1)
 
+
+def getUnionAreas(boxA, boxB, interArea=None):
+    area_A = getArea(boxA)
+    area_B = getArea(boxB)
+    if interArea is None:
+        interArea = getIntersectionArea(boxA, boxB)
+    return float(area_A + area_B - interArea)
+
+
+def getArea(box):
+    return (box[2] - box[0] + 1) * (box[3] - box[1] + 1)
