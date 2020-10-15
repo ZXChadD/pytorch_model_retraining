@@ -5,6 +5,7 @@ from vision.utils.misc import str2bool, Timer
 from pascal_voc_writer import Writer
 from vision.ssd.mobilenet_v2_ssd_lite import create_mobilenetv2_ssd_lite, create_mobilenetv2_ssd_lite_predictor
 import xml.etree.ElementTree as ET
+import random
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -48,16 +49,28 @@ def predict(trained_model, iteration):
                 x2 = boxes[x][2]
                 y2 = boxes[x][3]
                 writer.addObject(name_of_object, x1, y1, x2, y2)
+                detected_box = [x1, y1, x2, y2]
 
-                objects = ET.parse(annotation_file).findall("object")
+                probability = random.random()
 
-                for object in objects:
-                    class_name = object.find('name').text.lower().strip()
-                    bbox = object.find('bndbox')
-                    x1 = float(bbox.find('xmin').text)
-                    y1 = float(bbox.find('ymin').text)
-                    x2 = float(bbox.find('xmax').text)
-                    y2 = float(bbox.find('ymax').text)
+                if probability < 0.15:
+                    ####### human annotation #######
+                    objects = ET.parse('../data/train/Annotations/' + str(i) + '.png').findall("object")
+                    for object in objects:
+                        name_of_object_gt = object.find('name').text.lower().strip()
+                        bbox = object.find('bndbox')
+                        x1 = float(bbox.find('xmin').text)
+                        y1 = float(bbox.find('ymin').text)
+                        x2 = float(bbox.find('xmax').text)
+                        y2 = float(bbox.find('ymax').text)
+                        actual_box = [x1, y1, x2, y2]
+
+                        if iou(actual_box, detected_box) > 0.5:
+                            name_of_object = name_of_object_gt
+                elif 0.15 < probability < 0.20:
+                    continue
+
+                writer.addObject(name_of_object, x1, y1, x2, y2)
 
         ####### save pascal voc file #######
         writer.save(
