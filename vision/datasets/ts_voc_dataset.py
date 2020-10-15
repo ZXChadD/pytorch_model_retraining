@@ -67,7 +67,7 @@ class VOCDataset:
 
     def _get_annotation(self, image_id):
         if self.iteration == -1:
-            annotation_file = self.root / f"Annotation/{image_id}.xml"
+            annotation_file = self.root / f"Annotations/{image_id}.xml"
         else:
             annotation_file = self.root / f"{self.iteration}/{image_id}.xml"
         objects = ET.parse(annotation_file).findall("object")
