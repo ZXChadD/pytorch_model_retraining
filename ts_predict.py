@@ -86,7 +86,7 @@ def load_label_names():
     return ['BACKGROUND', 'airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'ship', ]
 
 
-predict("mb2-ssd-lite-Epoch-120-Loss-1.4295518628337927.pth", 1)
+# predict("mb2-ssd-lite-Epoch-120-Loss-1.4295518628337927.pth", 1)
 
 
 def iou(boxA, boxB):
