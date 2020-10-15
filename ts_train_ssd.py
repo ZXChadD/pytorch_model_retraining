@@ -186,7 +186,7 @@ if __name__ == '__main__':
 
         ####### Validation dataset #######
         logging.info("Prepare Validation datasets.")
-        val_dataset = VOCDataset(iteration_count, args.validation_dataset, transform=test_transform,
+        val_dataset = VOCDataset(-1, args.validation_dataset, transform=test_transform,
                                  target_transform=target_transform, is_test=True)
         logging.info(val_dataset)
         logging.info("validation dataset size: {}".format(len(val_dataset)))
