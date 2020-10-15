@@ -59,5 +59,5 @@ def load_label_names():
     return ['BACKGROUND', 'airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'ship', ]
 
 
-predict("Epoch-120-Loss-1.422243544929906.pth", 1)
+# predict("Epoch-120-Loss-1.422243544929906.pth", 1)
 
