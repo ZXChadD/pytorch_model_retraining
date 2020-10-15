@@ -73,7 +73,7 @@ count = train_loop.getint("count")
 
 # Teacher Student Retraining Loop
 current_FAR = 100
-iteration_count = 0
+iteration_count = 1
 pretrained_model_path = "../models/mb2-ssd-lite-mp-0_686.pth"
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
@@ -249,7 +249,7 @@ if __name__ == '__main__':
                     f"Validation Regression Loss {val_regression_loss:.4f}, " +
                     f"Validation Classification Loss: {val_classification_loss:.4f}"
                 )
-                model_path = os.path.join("../saved_models", f"{args.net}-Epoch-{epoch}-Loss-{val_loss}.pth")
+                model_path = os.path.join("../saved_models", f"{iteration_count}-Epoch-{epoch}-Loss-{val_loss}.pth")
                 net.save(model_path)
                 logging.info(f"Saved model {model_path}")
 
@@ -287,7 +287,7 @@ if __name__ == '__main__':
         if new_FAR < current_FAR:
             current_FAR = new_FAR
             iteration_count += 1
-            new_model_path = "../models/" + min_file_name + ".pth"
+            new_model_path = min_file
             ts_predict.predict(new_model_path, iteration_count)
             logging.info(f"Iteration number: {iteration_count}.")
 

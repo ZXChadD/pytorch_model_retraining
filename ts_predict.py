@@ -6,11 +6,13 @@ from pascal_voc_writer import Writer
 from vision.ssd.mobilenet_v2_ssd_lite import create_mobilenetv2_ssd_lite, create_mobilenetv2_ssd_lite_predictor
 import xml.etree.ElementTree as ET
 import random
+import pandas as pd
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 def predict(trained_model, iteration):
+    # conf_matrix = confusion_matrix()
     model_path = "../saved_models/" + trained_model
     save_path = pathlib.Path('../data/train/' + str(iteration))
     save_path.mkdir(exist_ok=True)
@@ -43,32 +45,33 @@ def predict(trained_model, iteration):
 
         for x in range(len(probs)):
             if probs[x] > 0.3:
-                name_of_object = label_names[labels[x]]
+                label_number = labels[x]
+                name_of_object = label_names[label_number]
                 x1 = boxes[x][0]
                 y1 = boxes[x][1]
                 x2 = boxes[x][2]
                 y2 = boxes[x][3]
-                writer.addObject(name_of_object, x1, y1, x2, y2)
-                detected_box = [x1, y1, x2, y2]
 
-                probability = random.random()
-
-                if probability < 0.15:
-                    ####### human annotation #######
-                    objects = ET.parse('../data/train/Annotations/' + str(i) + '.png').findall("object")
-                    for object in objects:
-                        name_of_object_gt = object.find('name').text.lower().strip()
-                        bbox = object.find('bndbox')
-                        x1 = float(bbox.find('xmin').text)
-                        y1 = float(bbox.find('ymin').text)
-                        x2 = float(bbox.find('xmax').text)
-                        y2 = float(bbox.find('ymax').text)
-                        actual_box = [x1, y1, x2, y2]
-
-                        if iou(actual_box, detected_box) > 0.5:
-                            name_of_object = name_of_object_gt
-                elif 0.15 < probability < 0.20:
-                    continue
+                # detected_box = [x1, y1, x2, y2]
+                # probability = random.random()
+                # if probability < 0.15:
+                #     ####### human annotation #######
+                #     objects = ET.parse('../data/train/Annotations/' + str(i) + '.png').findall("object")
+                #     for object in objects:
+                #         name_of_object_gt = object.find('name').text.lower().strip()
+                #         bbox = object.find('bndbox')
+                #         x1 = float(bbox.find('xmin').text)
+                #         y1 = float(bbox.find('ymin').text)
+                #         x2 = float(bbox.find('xmax').text)
+                #         y2 = float(bbox.find('ymax').text)
+                #         actual_box = [x1, y1, x2, y2]
+                #
+                #         if iou(actual_box, detected_box) > 0.5:
+                #             name_of_object = name_of_object_gt
+                #
+                #
+                # elif 0.15 < probability < 0.20:
+                #     continue
 
                 writer.addObject(name_of_object, x1, y1, x2, y2)
 
@@ -83,7 +86,8 @@ def load_label_names():
     return ['BACKGROUND', 'airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'ship', ]
 
 
-# predict("Epoch-120-Loss-1.422243544929906.pth", 1)
+predict("mb2-ssd-lite-Epoch-120-Loss-1.4295518628337927.pth", 1)
+
 
 def iou(boxA, boxB):
     # if boxes dont intersect
@@ -130,3 +134,97 @@ def getUnionAreas(boxA, boxB, interArea=None):
 
 def getArea(box):
     return (box[2] - box[0] + 1) * (box[3] - box[1] + 1)
+
+
+def confusion_matrix():
+    actual_gt = []
+    predictions = []
+
+    for i in range(1, 9):
+        for j in range(0, 10):
+            actual_gt.append(i)
+
+    ### Airplane ###
+    for y in range(0, 10):
+        prob = random.random()
+        if prob < 0.1:
+            predictions.append(2)
+        else:
+            predictions.append(1)
+
+    ### Automobile ###
+    for y in range(0, 10):
+        prob = random.random()
+        if prob < 0.1:
+            predictions.append(8)
+        else:
+            predictions.append(2)
+
+    ### Bird ###
+    for y in range(0, 10):
+        prob = random.random()
+        if prob < 0.3:
+            predictions.append(7)
+        else:
+            predictions.append(3)
+
+    ### Cat ###
+    for y in range(0, 10):
+        prob = random.random()
+        if prob < 0.1:
+            predictions.append(5)
+        elif 0.1 < prob < 0.4:
+            predictions.append(6)
+        else:
+            predictions.append(4)
+
+    ### Deer ###
+    for y in range(0, 10):
+        prob = random.random()
+        if prob < 0.1:
+            predictions.append(4)
+        elif 0.1 < prob < 0.2:
+            predictions.append(6)
+        else:
+            predictions.append(5)
+
+    ### Dog ###
+    for y in range(0, 10):
+        prob = random.random()
+        if prob < 0.3:
+            predictions.append(4)
+        else:
+            predictions.append(6)
+
+    ### Frog ###
+    for y in range(0, 10):
+        prob = random.random()
+        if prob < 0.2:
+            predictions.append(3)
+        else:
+            predictions.append(7)
+
+    ### Sheep ###
+    for y in range(0, 10):
+        prob = random.random()
+        if prob < 0.1:
+            predictions.append(1)
+        else:
+            predictions.append(8)
+
+    print(actual_gt)
+    print(predictions)
+    actual_gt = pd.Series(actual_gt)
+    predictions = pd.Series(predictions)
+
+    df_confusion = pd.crosstab(actual_gt, predictions, rownames=['Actual'], colnames=['Predicted'], margins=True)
+    df_conf_norm = df_confusion / 10
+
+    return df_conf_norm
+    print(df_conf_norm)
+    print(df_conf_norm.iloc[4, 4])
+    # print(df_confusion)
+
+
+# if __name__ == "__main__":
+#     confusion_matrix()
