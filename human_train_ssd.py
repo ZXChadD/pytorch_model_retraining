@@ -295,14 +295,14 @@ if __name__ == '__main__':
         logging.info(f"Copying file {min_file}.")
         # copyfile(min_file, "../models")
 
-        if new_FAR > current_FAR:
+        if human_accuracy < 0.5:
             current_FAR = new_FAR
             iteration_count += 1
             human_accuracy += 0.05
             human_predict.predict(iteration_count, human_accuracy)
             logging.info(f"Iteration number: {iteration_count}.")
 
-        elif current_FAR > new_FAR:
+        elif human_accuracy == 0.5:
             logging.info(f"Training ends")
             logging.info(f"Human Accuracy: {human_accuracy}")
             break
