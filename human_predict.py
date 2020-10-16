@@ -75,7 +75,7 @@ def predict(iteration, human_accuracy):
         writer.save(
             '../data/train/' + str(iteration) + '/' + str(i) + '.xml')
 
-        if i % 10 == 0:
+        if i % 100 == 0:
             print("Finshed: " + str(i))
 
 
