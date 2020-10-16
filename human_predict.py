@@ -11,9 +11,9 @@ import pandas as pd
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-def predict(trained_model, iteration, human_accuracy):
+def predict(iteration, human_accuracy):
     # conf_matrix = confusion_matrix()
-    model_path = "../saved_models/" + trained_model
+    model_path = "../models/mb2-ssd-lite-mp-0_686.pth"
     save_path = pathlib.Path('../data/train/' + str(iteration))
     save_path.mkdir(exist_ok=True)
     timer = Timer()

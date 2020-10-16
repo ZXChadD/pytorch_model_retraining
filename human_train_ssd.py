@@ -149,7 +149,7 @@ if __name__ == '__main__':
 
     human_accuracy = 0.1
 
-    human_predict.predict(pretrained_model_path, iteration_count, human_accuracy)
+    human_predict.predict(iteration_count, human_accuracy)
 
     while True:
 
@@ -299,7 +299,7 @@ if __name__ == '__main__':
             current_FAR = new_FAR
             iteration_count += 1
             human_accuracy += 0.05
-            human_predict.predict(pretrained_model_path, iteration_count, human_accuracy)
+            human_predict.predict(iteration_count, human_accuracy)
             logging.info(f"Iteration number: {iteration_count}.")
 
         elif current_FAR > new_FAR:
