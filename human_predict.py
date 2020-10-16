@@ -56,7 +56,7 @@ def predict(iteration, human_accuracy):
                 probability = random.random()
                 if probability < human_accuracy:
                     ####### human annotation #######
-                    objects = ET.parse('../data/train/Annotations/' + str(i) + '.png').findall("object")
+                    objects = ET.parse('../data/train/Annotations/' + str(i) + '.xml').findall("object")
                     for object in objects:
                         name_of_object_gt = object.find('name').text.lower().strip()
                         bbox = object.find('bndbox')
