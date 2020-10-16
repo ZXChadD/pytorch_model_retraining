@@ -67,13 +67,12 @@ training = config_file["TRAININGINFO"]
 sgd = config_file["SGD"]
 scheduler = config_file["SCHEDULER"]
 train_loop = config_file["TRAINLOOP"]
-min_val_loss = train_loop.getint("min_val_loss")
 epoch_limit = train_loop.getint("epoch_limit")
 count = train_loop.getint("count")
 
 # Teacher Student Retraining Loop
 current_FAR = 100
-iteration_count = 2
+iteration_count = 0
 pretrained_model_path = "../models/mb2-ssd-lite-mp-0_686.pth"
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
@@ -151,6 +150,7 @@ if __name__ == '__main__':
     while True:
 
         all_files = []
+        min_val_loss = train_loop.getint("min_val_loss")
 
         timer = Timer()
         create_net = lambda num: create_mobilenetv2_ssd_lite(num, width_mult=args.mb2_width_mult)
