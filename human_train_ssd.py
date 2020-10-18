@@ -166,7 +166,7 @@ if __name__ == '__main__':
         create_net = lambda num: create_mobilenetv2_ssd_lite(num, width_mult=args.mb2_width_mult)
         config = mobilenetv1_ssd_config
 
-        ####### Apple augmentation #######
+        ####### Augmentation #######
         train_transform = TrainAugmentation(config.image_size, config.image_mean, config.image_std)
         target_transform = MatchPrior(config.priors, config.center_variance,
                                       config.size_variance, 0.5)
