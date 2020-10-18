@@ -43,33 +43,53 @@ def predict(iteration, human_accuracy):
         labels = labels.numpy()
         boxes = boxes.numpy()
 
+        all_labels = []
+
         for x in range(len(probs)):
-            if probs[x] > 0.3:
-                label_number = labels[x]
-                name_of_object = label_names[label_number]
-                x1 = boxes[x][0]
-                y1 = boxes[x][1]
-                x2 = boxes[x][2]
-                y2 = boxes[x][3]
+            add_flag = 1
+            label_number = labels[x]
+            name_of_object = label_names[label_number]
+            x1 = boxes[x][0]
+            y1 = boxes[x][1]
+            x2 = boxes[x][2]
+            y2 = boxes[x][3]
+            current_label = [x1, y1, x2, y2]
+            detected_box = [name_of_object, probs[x], current_label]
 
-                detected_box = [x1, y1, x2, y2]
-                probability = random.random()
-                if probability < human_accuracy:
-                    ####### human annotation #######
-                    objects = ET.parse('../data/train/Annotations/' + str(i) + '.xml').findall("object")
-                    for object in objects:
-                        name_of_object_gt = object.find('name').text.lower().strip()
-                        bbox = object.find('bndbox')
-                        x1 = float(bbox.find('xmin').text)
-                        y1 = float(bbox.find('ymin').text)
-                        x2 = float(bbox.find('xmax').text)
-                        y2 = float(bbox.find('ymax').text)
-                        actual_box = [x1, y1, x2, y2]
+            if not all_labels:
+                all_labels.append(detected_box)
+                continue
 
-                        if iou(actual_box, detected_box) > 0.5:
-                            name_of_object = name_of_object_gt
+            for y in range(len(all_labels)):
+                if iou(all_labels[y][2], detected_box[2]) > 0.7 and all_labels[y][1] > detected_box[1]:
+                    add_flag = 0
+                elif iou(all_labels[y][2], detected_box[2]) > 0.7 and all_labels[y][1] < detected_box[1]:
+                    add_flag = 0
+                    all_labels[y][0] = detected_box[0]
+                    all_labels[y][1] = detected_box[1]
+                    all_labels[y][2] = detected_box[2]
 
-                writer.addObject(name_of_object, x1, y1, x2, y2)
+            if add_flag == 1:
+                all_labels.append(detected_box)
+
+        for each_object in all_labels:
+            probability = random.random()
+            if probability < human_accuracy:
+                ####### human annotation #######
+                objects = ET.parse('../data/train/Annotations/' + str(i) + '.xml').findall("object")
+                for object in objects:
+                    name_of_object_gt = object.find('name').text.lower().strip()
+                    bbox = object.find('bndbox')
+                    x1 = float(bbox.find('xmin').text)
+                    y1 = float(bbox.find('ymin').text)
+                    x2 = float(bbox.find('xmax').text)
+                    y2 = float(bbox.find('ymax').text)
+                    actual_box = [x1, y1, x2, y2]
+
+                    if iou(actual_box, each_object[2]) > 0.5:
+                        each_object[0] = name_of_object_gt
+
+            writer.addObject(each_object[0], each_object[2][0], each_object[2][1], each_object[2][2], each_object[2][3])
 
         ####### save pascal voc file #######
         writer.save(
@@ -81,9 +101,6 @@ def predict(iteration, human_accuracy):
 
 def load_label_names():
     return ['BACKGROUND', 'airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'ship', ]
-
-
-# predict("mb2-ssd-lite-Epoch-120-Loss-1.4295518628337927.pth", 1)
 
 
 def iou(boxA, boxB):
@@ -131,6 +148,9 @@ def getUnionAreas(boxA, boxB, interArea=None):
 
 def getArea(box):
     return (box[2] - box[0] + 1) * (box[3] - box[1] + 1)
+
+
+# predict(0, 0.5)
 
 
 def confusion_matrix():
