@@ -22,7 +22,8 @@ class MultiboxLoss(nn.Module):
         self.priors = priors
         self.priors.to(device)
 
-    def forward(self, confidence, predicted_locations, labels, gt_locations):
+    def forward(self, confidence, predicted_locations, labels, gt_locations,
+                label_mask=None):
         """Compute classification loss and smooth l1 loss.
 
         Args:
@@ -30,16 +31,21 @@ class MultiboxLoss(nn.Module):
             locations (batch_size, num_priors, 4): predicted locations.
             labels (batch_size, num_priors): real labels of all the priors.
             boxes (batch_size, num_priors, 4): real boxes corresponding all the priors.
+            label_mask (batch_size, num_priors): locations to apply loss
         """
         num_classes = confidence.size(2)
         with torch.no_grad():
             # derived from cross_entropy=sum(log(p))
             loss = -F.log_softmax(confidence, dim=2)[:, :, 0]
-            mask = box_utils.hard_negative_mining(loss, labels, self.neg_pos_ratio)
+            conf_mask = box_utils.hard_negative_mining(loss, labels, self.neg_pos_ratio)
 
-        confidence = confidence[mask, :]
-        classification_loss = F.cross_entropy(confidence.reshape(-1, num_classes), labels[mask], size_average=False)
+        if label_mask is not None:
+            conf_mask = torch.logical_and(conf_mask, label_mask)
+        confidence = confidence[conf_mask, :]
+        classification_loss = F.cross_entropy(confidence.reshape(-1, num_classes), labels[conf_mask], size_average=False)
         pos_mask = labels > 0
+        if label_mask is not None:
+            pos_mask = torch.logical_and(pos_mask, label_mask)
         predicted_locations = predicted_locations[pos_mask, :].reshape(-1, 4)
         gt_locations = gt_locations[pos_mask, :].reshape(-1, 4)
         smooth_l1_loss = F.smooth_l1_loss(predicted_locations, gt_locations, size_average=False)
