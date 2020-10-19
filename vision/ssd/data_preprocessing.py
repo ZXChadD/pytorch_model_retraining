@@ -23,15 +23,17 @@ class TrainAugmentation:
             ToTensor(),
         ])
 
-    def __call__(self, img, boxes, labels):
+    def __call__(self, img, boxes, labels, label_mask):
         """
 
         Args:
             img: the output of cv.imread in RGB layout.
             boxes: boundding boxes in the form of (x1, y1, x2, y2).
             labels: labels of boxes.
+            label_mask: boolean for whether each label is to be masked
         """
-        return self.augment(img, boxes, labels)
+        raise NotImplementedError('Implement augmentation handling for mask')
+        return self.augment(img, boxes, labels, label_mask)
 
 
 class TestTransform:
