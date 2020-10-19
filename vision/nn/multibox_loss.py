@@ -37,12 +37,12 @@ class MultiboxLoss(nn.Module):
         with torch.no_grad():
             # derived from cross_entropy=sum(log(p))
             loss = -F.log_softmax(confidence, dim=2)[:, :, 0]
-            mask = box_utils.hard_negative_mining(loss, labels, self.neg_pos_ratio)
+            conf_mask = box_utils.hard_negative_mining(loss, labels, self.neg_pos_ratio)
 
         if label_mask is not None:
-            mask = torch.logical_and(mask, label_mask)
-        confidence = confidence[mask, :]
-        classification_loss = F.cross_entropy(confidence.reshape(-1, num_classes), labels[mask], size_average=False)
+            conf_mask = torch.logical_and(conf_mask, label_mask)
+        confidence = confidence[conf_mask, :]
+        classification_loss = F.cross_entropy(confidence.reshape(-1, num_classes), labels[conf_mask], size_average=False)
         pos_mask = labels > 0
         if label_mask is not None:
             pos_mask = torch.logical_and(pos_mask, label_mask)
