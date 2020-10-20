@@ -6,6 +6,7 @@ import torch.nn.functional as F
 
 from ..utils import box_utils
 from collections import namedtuple
+
 GraphPath = namedtuple("GraphPath", ['s0', 'name', 's1'])  #
 
 
@@ -36,7 +37,7 @@ class SSD(nn.Module):
         if is_test:
             self.config = config
             self.priors = config.priors.to(self.device)
-            
+
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         confidences = []
         locations = []
@@ -86,7 +87,7 @@ class SSD(nn.Module):
 
         confidences = torch.cat(confidences, 1)
         locations = torch.cat(locations, 1)
-        
+
         if self.is_test:
             confidences = F.softmax(confidences, dim=2)
             boxes = box_utils.convert_locations_to_boxes(
@@ -117,7 +118,8 @@ class SSD(nn.Module):
 
     def init_from_pretrained_ssd(self, model):
         state_dict = torch.load(model, map_location=lambda storage, loc: storage)
-        state_dict = {k: v for k, v in state_dict.items() if not (k.startswith("classification_headers") or k.startswith("regression_headers"))}
+        state_dict = {k: v for k, v in state_dict.items() if
+                      not (k.startswith("classification_headers") or k.startswith("regression_headers"))}
         model_dict = self.state_dict()
         model_dict.update(state_dict)
         self.load_state_dict(model_dict)
@@ -146,16 +148,19 @@ class MatchPrior(object):
         self.size_variance = size_variance
         self.iou_threshold = iou_threshold
 
-    def __call__(self, gt_boxes, gt_labels, gt_mask):
+    def __call__(self, gt_boxes, gt_labels):
         if type(gt_boxes) is np.ndarray:
             gt_boxes = torch.from_numpy(gt_boxes)
         if type(gt_labels) is np.ndarray:
             gt_labels = torch.from_numpy(gt_labels)
+
+        ### Ground Truth boxes ###
         boxes, labels = box_utils.assign_priors(gt_boxes, gt_labels,
                                                 self.corner_form_priors, self.iou_threshold)
         boxes = box_utils.corner_form_to_center_form(boxes)
-        locations = box_utils.convert_boxes_to_locations(boxes, self.center_form_priors, self.center_variance, self.size_variance)
-        raise NotImplementedError('Implement mask to dense array')
+        locations = box_utils.convert_boxes_to_locations(boxes, self.center_form_priors, self.center_variance,
+                                                         self.size_variance)
+
         return locations, labels
 
 

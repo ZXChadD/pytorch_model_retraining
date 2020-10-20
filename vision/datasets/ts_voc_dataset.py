@@ -38,10 +38,10 @@ class VOCDataset:
             labels = labels[is_difficult == 0]
         image = self._read_image(image_id)
         if self.transform:
-            image, boxes, labels, label_mask = self.transform(image, boxes, labels, is_masked)
+            image, boxes, labels = self.transform(image, boxes, labels)
         if self.target_transform:
-            boxes, labels, label_mask = self.target_transform(boxes, labels, is_masked)
-        return image, boxes, labels, label_mask
+            boxes, labels = self.target_transform(boxes, labels)
+        return image, boxes, labels, is_masked
 
     def get_image(self, index):
         image_id = self.ids[index]
@@ -93,7 +93,7 @@ class VOCDataset:
                 is_difficult.append(int(is_difficult_str) if is_difficult_str else 0)
                 
                 is_masked_str = object.find('masked').text
-                is_masked.append(int(is_masked_str) if is_masked_str else 0)
+                is_masked.append(0 if is_masked_str else int(is_masked_str))
 
         return (np.array(boxes, dtype=np.float32),
                 np.array(labels, dtype=np.int64),
