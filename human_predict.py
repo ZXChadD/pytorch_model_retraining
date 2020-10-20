@@ -53,7 +53,7 @@ def predict(iteration, human_accuracy):
             y1 = boxes[x][1]
             x2 = boxes[x][2]
             y2 = boxes[x][3]
-            if 0.4 <= probs <= 0.5:
+            if 0.4 <= probs[x] <= 0.5:
                 writer.addObject(name_of_object, x1, y1, x2, y2, 1)
             else:
                 writer.addObject(name_of_object, x1, y1, x2, y2, 0)
