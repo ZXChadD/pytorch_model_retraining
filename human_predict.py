@@ -2,7 +2,7 @@ import torch
 from vision.datasets.voc_dataset import VOCDataset
 import pathlib
 from vision.utils.misc import str2bool, Timer
-from pascal_voc_writer import Writer
+from vision.utils.pascal_voc_writer import Writer
 from vision.ssd.mobilenet_v2_ssd_lite import create_mobilenetv2_ssd_lite, create_mobilenetv2_ssd_lite_predictor
 import xml.etree.ElementTree as ET
 import random
