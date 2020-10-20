@@ -53,43 +53,69 @@ def predict(iteration, human_accuracy):
             y1 = boxes[x][1]
             x2 = boxes[x][2]
             y2 = boxes[x][3]
-            current_label = [x1, y1, x2, y2]
-            detected_box = [name_of_object, probs[x], current_label]
+            if 0.4 <= probs <= 0.5:
+                writer.addObject(name_of_object, x1, y1, x2, y2, 1)
+            else:
+                writer.addObject(name_of_object, x1, y1, x2, y2, 0)
 
-            if not all_labels:
-                all_labels.append(detected_box)
-                continue
-
-            for y in range(len(all_labels)):
-                if iou(all_labels[y][2], detected_box[2]) > 0.7 and all_labels[y][1] > detected_box[1]:
-                    add_flag = 0
-                elif iou(all_labels[y][2], detected_box[2]) > 0.7 and all_labels[y][1] < detected_box[1]:
-                    add_flag = 0
-                    all_labels[y][0] = detected_box[0]
-                    all_labels[y][1] = detected_box[1]
-                    all_labels[y][2] = detected_box[2]
-
-            if add_flag == 1:
-                all_labels.append(detected_box)
-
-        for each_object in all_labels:
-            probability = random.random()
-            if probability < human_accuracy:
-                ####### human annotation #######
-                objects = ET.parse('../data/train/Annotations/' + str(i) + '.xml').findall("object")
-                for object in objects:
-                    name_of_object_gt = object.find('name').text.lower().strip()
-                    bbox = object.find('bndbox')
-                    x1 = float(bbox.find('xmin').text)
-                    y1 = float(bbox.find('ymin').text)
-                    x2 = float(bbox.find('xmax').text)
-                    y2 = float(bbox.find('ymax').text)
-                    actual_box = [x1, y1, x2, y2]
-
-                    if iou(actual_box, each_object[2]) > 0.5:
-                        each_object[0] = name_of_object_gt
-
-            writer.addObject(each_object[0], each_object[2][0], each_object[2][1], each_object[2][2], each_object[2][3])
+    # for i in range(len(dataset)):
+    #     ####### initialise a writer to create pascal voc file #######
+    #     writer = Writer(
+    #         '../data/train/PNGImages/' + str(i) + '.png', 256, 256)
+    #     image = dataset.get_image(i)
+    #     boxes, labels, probs = predictor.predict(image)
+    #
+    #     probs = probs.numpy()
+    #     labels = labels.numpy()
+    #     boxes = boxes.numpy()
+    #
+    #     all_labels = []
+    #
+    #     for x in range(len(probs)):
+    #         add_flag = 1
+    #         label_number = labels[x]
+    #         name_of_object = label_names[label_number]
+    #         x1 = boxes[x][0]
+    #         y1 = boxes[x][1]
+    #         x2 = boxes[x][2]
+    #         y2 = boxes[x][3]
+    #         current_label = [x1, y1, x2, y2]
+    #         detected_box = [name_of_object, probs[x], current_label]
+    #
+    #         if not all_labels:
+    #             all_labels.append(detected_box)
+    #             continue
+    #
+    #         for y in range(len(all_labels)):
+    #             if iou(all_labels[y][2], detected_box[2]) > 0.7 and all_labels[y][1] > detected_box[1]:
+    #                 add_flag = 0
+    #             elif iou(all_labels[y][2], detected_box[2]) > 0.7 and all_labels[y][1] < detected_box[1]:
+    #                 add_flag = 0
+    #                 all_labels[y][0] = detected_box[0]
+    #                 all_labels[y][1] = detected_box[1]
+    #                 all_labels[y][2] = detected_box[2]
+    #
+    #         if add_flag == 1:
+    #             all_labels.append(detected_box)
+    #
+    #     for each_object in all_labels:
+    #         probability = random.random()
+    #         if probability < human_accuracy:
+    #             ####### human annotation #######
+    #             objects = ET.parse('../data/train/Annotations/' + str(i) + '.xml').findall("object")
+    #             for object in objects:
+    #                 name_of_object_gt = object.find('name').text.lower().strip()
+    #                 bbox = object.find('bndbox')
+    #                 x1 = float(bbox.find('xmin').text)
+    #                 y1 = float(bbox.find('ymin').text)
+    #                 x2 = float(bbox.find('xmax').text)
+    #                 y2 = float(bbox.find('ymax').text)
+    #                 actual_box = [x1, y1, x2, y2]
+    #
+    #                 if iou(actual_box, each_object[2]) > 0.5:
+    #                     each_object[0] = name_of_object_gt
+    #
+    #         writer.addObject(each_object[0], each_object[2][0], each_object[2][1], each_object[2][2], each_object[2][3])
 
         ####### save pascal voc file #######
         writer.save(
