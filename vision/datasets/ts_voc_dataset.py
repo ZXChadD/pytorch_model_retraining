@@ -89,8 +89,8 @@ class VOCDataset:
                 boxes.append([x1, y1, x2, y2])
 
                 labels.append(self.class_dict[class_name])
-                is_difficult_str = object.find('difficult').text
-                is_difficult.append(int(is_difficult_str) if is_difficult_str else 0)
+                is_difficult_str = int(object.find('difficult').text)
+                is_difficult.append(is_difficult_str if is_difficult_str else 0)
                 
                 is_masked_str = object.find('masked').text
                 is_masked.append(0 if is_masked_str else int(is_masked_str))
