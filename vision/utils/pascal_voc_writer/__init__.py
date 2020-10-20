@@ -1,10 +1,13 @@
 import os
-from jinja2 import Environment, PackageLoader
+from jinja2 import Environment, FileSystemLoader
+import pathlib
+
 
 
 class Writer:
     def __init__(self, path, width, height, depth=3, database='Unknown', segmented=0):
-        environment = Environment(loader=PackageLoader('pascal_voc_writer', 'templates'), keep_trailing_newline=True)
+        current_path = pathlib.Path(__file__).parent.absolute()
+        environment = Environment(loader=FileSystemLoader(current_path), keep_trailing_newline=True)
         self.annotation_template = environment.get_template('annotation.xml')
 
         abspath = os.path.abspath(path)
@@ -21,14 +24,14 @@ class Writer:
             'objects': []
         }
 
-    def addObject(self, name, xmin, ymin, xmax, ymax, is_masked, pose='Unspecified', truncated=0, difficult=0):
+    def addObject(self, name, xmin, ymin, xmax, ymax, masked, pose='Unspecified', truncated=0, difficult=0):
         self.template_parameters['objects'].append({
             'name': name,
             'xmin': xmin,
             'ymin': ymin,
             'xmax': xmax,
             'ymax': ymax,
-            'is_masked': is_masked,
+            'masked': masked,
             'pose': pose,
             'truncated': truncated,
             'difficult': difficult,

@@ -16,12 +16,12 @@
         <pose>{{ object.pose }}</pose>
         <truncated>{{ object.truncated }}</truncated>
         <difficult>{{ object.difficult }}</difficult>
+        <masked>{{ object.masked }}</masked>
         <bndbox>
             <xmin>{{ object.xmin }}</xmin>
             <ymin>{{ object.ymin }}</ymin>
             <xmax>{{ object.xmax }}</xmax>
             <ymax>{{ object.ymax }}</ymax>
         </bndbox>
-        <masked>{{ object.is_masked }}</masked>
     </object>{% endfor %}
 </annotation>

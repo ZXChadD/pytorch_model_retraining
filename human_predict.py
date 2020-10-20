@@ -13,7 +13,7 @@ DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def predict(iteration, human_accuracy):
     # conf_matrix = confusion_matrix()
-    model_path = "../models/Epoch-110-Loss-1.7577346393040247.pth"
+    model_path = "../saved_models/Epoch-110-Loss-1.7577346393040247.pth"
     save_path = pathlib.Path('../data/train/' + str(iteration))
     save_path.mkdir(exist_ok=True)
     timer = Timer()
@@ -54,9 +54,9 @@ def predict(iteration, human_accuracy):
             x2 = boxes[x][2]
             y2 = boxes[x][3]
             if 0.4 <= probs[x] <= 0.5:
-                writer.addObject(name_of_object, x1, y1, x2, y2, 1)
+                writer.addObject(name_of_object, x1, y1, x2, y2, masked=1)
             else:
-                writer.addObject(name_of_object, x1, y1, x2, y2, 0)
+                writer.addObject(name_of_object, x1, y1, x2, y2, masked=0)
 
     # for i in range(len(dataset)):
     #     ####### initialise a writer to create pascal voc file #######
