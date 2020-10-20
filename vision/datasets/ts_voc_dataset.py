@@ -93,7 +93,10 @@ class VOCDataset:
                 is_difficult.append(is_difficult_str if is_difficult_str else 0)
                 
                 is_masked_str = object.find('masked').text
-                is_masked.append(0 if is_masked_str else int(is_masked_str))
+                if is_difficult_str is None or int(is_masked_str) == 0:
+                    is_masked.append(1)
+                else:
+                    is_masked.append(0)
 
         return (np.array(boxes, dtype=np.float32),
                 np.array(labels, dtype=np.int64),
