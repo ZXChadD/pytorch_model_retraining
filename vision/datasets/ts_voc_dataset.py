@@ -100,7 +100,7 @@ class VOCDataset:
                 elif int(is_masked_str.text) == 0:
                     is_masked.append(1)
                 else:
-                    is_masked.append(1)
+                    is_masked.append(0)
 
         return (np.array(boxes, dtype=np.float32),
                 np.array(labels, dtype=np.int64),
