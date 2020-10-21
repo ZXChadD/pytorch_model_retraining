@@ -91,14 +91,16 @@ def train(loader, net, criterion, optimizer, device, debug_steps, epoch=-1):
     running_regression_loss = 0.0
     running_classification_loss = 0.0
     for i, data in enumerate(loader):
-        images, boxes, labels = data
+        images, boxes, labels, is_masked = data
         images = images.to(device)
         boxes = boxes.to(device)
         labels = labels.to(device)
+        is_masked = is_masked.to(device)
+
 
         optimizer.zero_grad()
         confidence, locations = net(images)
-        regression_loss, classification_loss = criterion(confidence, locations, labels, boxes)  # TODO CHANGE BOXES
+        regression_loss, classification_loss = criterion(confidence, locations, labels, boxes, label_mask=is_masked)
         loss = regression_loss + classification_loss
         loss.backward()
         optimizer.step()
@@ -128,15 +130,17 @@ def test(loader, net, criterion, device):
     running_classification_loss = 0.0
     num = 0
     for _, data in enumerate(loader):
-        images, boxes, labels = data
+        images, boxes, labels, is_masked = data
         images = images.to(device)
         boxes = boxes.to(device)
         labels = labels.to(device)
+        is_masked = is_masked.to(device)
+
         num += 1
 
         with torch.no_grad():
             confidence, locations = net(images)
-            regression_loss, classification_loss = criterion(confidence, locations, labels, boxes)
+            regression_loss, classification_loss = criterion(confidence, locations, labels, boxes, label_mask=is_masked)
             loss = regression_loss + classification_loss
 
         running_loss += loss.item()

@@ -19,11 +19,11 @@ class TrainAugmentation:
             ToPercentCoords(),
             Resize(self.size),
             SubtractMeans(self.mean),
-            lambda img, boxes=None, labels=None: (img / std, boxes, labels),
+            lambda img, boxes=None, labels=None, is_masked=None: (img / std, boxes, labels, is_masked),
             ToTensor(),
         ])
 
-    def __call__(self, img, boxes, labels):
+    def __call__(self, img, boxes, labels, is_masked):
         """
 
         Args:
@@ -32,7 +32,7 @@ class TrainAugmentation:
             labels: labels of boxes.
             label_mask: boolean for whether each label is to be masked
         """
-        return self.augment(img, boxes, labels)
+        return self.augment(img, boxes, labels, is_masked)
 
 
 class TestTransform:
@@ -54,10 +54,10 @@ class PredictionTransform:
         self.transform = Compose([
             Resize(size),
             SubtractMeans(mean),
-            lambda img, boxes=None, labels=None: (img / std, boxes, labels),
+            lambda img, boxes=None, labels=None, is_masked=None: (img / std, boxes, labels, is_masked),
             ToTensor()
         ])
 
     def __call__(self, image):
-        image, _, _ = self.transform(image)
+        image, _, _, _ = self.transform(image)
         return image

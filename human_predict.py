@@ -53,7 +53,7 @@ def predict(iteration, human_accuracy):
             y1 = boxes[x][1]
             x2 = boxes[x][2]
             y2 = boxes[x][3]
-            if 0.4 <= probs[x] <= 0.5:
+            if 0.4 <= probs[x] <= 0.6:
                 writer.addObject(name_of_object, x1, y1, x2, y2, masked=1)
             else:
                 writer.addObject(name_of_object, x1, y1, x2, y2, masked=0)
@@ -254,9 +254,9 @@ def confusion_matrix():
             predictions.append(1)
         else:
             predictions.append(8)
-
-    print(actual_gt)
-    print(predictions)
+    #
+    # print(actual_gt)
+    # print(predictions)
     actual_gt = pd.Series(actual_gt)
     predictions = pd.Series(predictions)
 

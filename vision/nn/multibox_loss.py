@@ -43,6 +43,7 @@ class MultiboxLoss(nn.Module):
             conf_mask = torch.logical_and(conf_mask, label_mask)
         confidence = confidence[conf_mask, :]
         classification_loss = F.cross_entropy(confidence.reshape(-1, num_classes), labels[conf_mask], size_average=False)
+
         pos_mask = labels > 0
         if label_mask is not None:
             pos_mask = torch.logical_and(pos_mask, label_mask)

@@ -148,20 +148,22 @@ class MatchPrior(object):
         self.size_variance = size_variance
         self.iou_threshold = iou_threshold
 
-    def __call__(self, gt_boxes, gt_labels):
+    def __call__(self, gt_boxes, gt_labels, gt_masks):
         if type(gt_boxes) is np.ndarray:
             gt_boxes = torch.from_numpy(gt_boxes)
         if type(gt_labels) is np.ndarray:
             gt_labels = torch.from_numpy(gt_labels)
+        if type(gt_masks) is np.ndarray:
+            gt_masks = torch.from_numpy(gt_masks)
 
         ### Ground Truth boxes ###
-        boxes, labels = box_utils.assign_priors(gt_boxes, gt_labels,
-                                                self.corner_form_priors, self.iou_threshold)
+        boxes, labels, masks = box_utils.assign_priors(gt_boxes, gt_labels, gt_masks,
+                                                       self.corner_form_priors, self.iou_threshold)
         boxes = box_utils.corner_form_to_center_form(boxes)
         locations = box_utils.convert_boxes_to_locations(boxes, self.center_form_priors, self.center_variance,
                                                          self.size_variance)
 
-        return locations, labels
+        return locations, labels, masks
 
 
 def _xavier_init_(m: nn.Module):

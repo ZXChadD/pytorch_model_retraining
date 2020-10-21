@@ -100,7 +100,7 @@ def train(loader, net, criterion, optimizer, device, debug_steps, epoch=-1):
         optimizer.zero_grad()
         confidence, locations = net(images)
         regression_loss, classification_loss = criterion(confidence, locations, labels, boxes,
-                                                         label_mask=is_masked)  # TODO CHANGE BOXES
+                                                         label_mask=is_masked)
         loss = regression_loss + classification_loss
         loss.backward()
         optimizer.step()
@@ -153,7 +153,7 @@ if __name__ == '__main__':
 
     human_accuracy = 0.1
 
-    human_predict.predict(iteration_count, human_accuracy)
+    # human_predict.predict(iteration_count, human_accuracy)
 
     while True:
 
@@ -190,8 +190,8 @@ if __name__ == '__main__':
             label_file = os.path.join("../models", "voc-model-labels.txt")
             store_labels(label_file, dataset.class_names)
             num_classes = len(dataset.class_names)
-
             datasets.append(dataset)
+
         logging.info(f"Stored labels into file {label_file}.")
         train_dataset = ConcatDataset(datasets)
         logging.info("Train dataset size: {}".format(len(train_dataset)))
