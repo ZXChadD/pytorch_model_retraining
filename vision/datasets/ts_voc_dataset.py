@@ -96,9 +96,9 @@ class VOCDataset:
 
                 is_masked_str = object.find('masked')
                 if is_masked_str is None:
-                    is_masked.append(0)
+                    is_masked.append(1)
                 elif int(is_masked_str.text) == 0:
-                    is_masked.append(0)
+                    is_masked.append(1)
                 else:
                     is_masked.append(1)
 
