@@ -41,12 +41,12 @@ class TestTransform:
             ToPercentCoords(),
             Resize(size),
             SubtractMeans(mean),
-            lambda img, boxes=None, labels=None: (img / std, boxes, labels),
+            lambda img, boxes=None, labels=None, is_masked=None: (img / std, boxes, labels, is_masked),
             ToTensor(),
         ])
 
-    def __call__(self, image, boxes, labels):
-        return self.transform(image, boxes, labels)
+    def __call__(self, image, boxes, labels, is_masked):
+        return self.transform(image, boxes, labels, is_masked)
 
 
 class PredictionTransform:
