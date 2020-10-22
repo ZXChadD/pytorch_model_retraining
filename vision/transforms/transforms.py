@@ -394,13 +394,15 @@ class PhotometricDistort(object):
             RandomHue(),  # HSV
             # ConvertColor(current='HSV', transform='RGB'),  # RGB
             # RandomContrast()  # RGB
+            RandomBrightness()
+            RandomLightingNoise()
         ]
         self.rand_brightness = RandomBrightness()
         self.rand_light_noise = RandomLightingNoise()
 
     def __call__(self, image, boxes, labels, is_masked):
         im = image.copy()
-        im, boxes, labels, is_masked = self.rand_brightness(im, boxes, labels, is_masked)
+        # im, boxes, labels, is_masked = self.rand_brightness(im, boxes, labels, is_masked)
         if random.randint(2):
             distort = Compose(self.pd[:-1])
         else:
