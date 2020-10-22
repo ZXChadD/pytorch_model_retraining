@@ -160,7 +160,7 @@ def getArea(box):
     return (box[2] - box[0] + 1) * (box[3] - box[1] + 1)
 
 
-predict("Epoch-110-Loss-1.7577346393040247.pth", 0)
+# predict("Epoch-110-Loss-1.7577346393040247.pth", 0)
 
 # if __name__ == "__main__":
 #     confusion_matrix()
