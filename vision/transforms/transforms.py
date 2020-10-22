@@ -394,7 +394,7 @@ class PhotometricDistort(object):
             RandomHue(),  # HSV
             # ConvertColor(current='HSV', transform='RGB'),  # RGB
             # RandomContrast()  # RGB
-            RandomBrightness()
+            RandomBrightness(),
             RandomLightingNoise()
         ]
         self.rand_brightness = RandomBrightness()
