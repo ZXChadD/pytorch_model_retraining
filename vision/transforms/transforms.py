@@ -389,11 +389,11 @@ class PhotometricDistort(object):
     def __init__(self):
         self.pd = [
             RandomContrast(),  # RGB
-            ConvertColor(current="RGB", transform='HSV'),  # HSV
+            # ConvertColor(current="RGB", transform='HSV'),  # HSV
             RandomSaturation(),  # HSV
             RandomHue(),  # HSV
-            ConvertColor(current='HSV', transform='RGB'),  # RGB
-            RandomContrast()  # RGB
+            # ConvertColor(current='HSV', transform='RGB'),  # RGB
+            # RandomContrast()  # RGB
         ]
         self.rand_brightness = RandomBrightness()
         self.rand_light_noise = RandomLightingNoise()

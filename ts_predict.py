@@ -33,6 +33,8 @@ def predict(trained_model, iteration):
 
     file1 = open("MaskFile.txt", "a")
 
+    margin = 0.05
+
     for i in range(len(dataset)):
         ####### initialise a writer to create pascal voc file #######
         writer = Writer(
@@ -54,7 +56,7 @@ def predict(trained_model, iteration):
             y1 = boxes[x][1]
             x2 = boxes[x][2]
             y2 = boxes[x][3]
-            if 0.4 <= probs[x] <= 0.6:
+            if 0.5 - margin <= probs[x] <= 0.5 + margin:
                 writer.addObject(name_of_object, x1, y1, x2, y2, masked=1)
                 total_count_mask += 1
             else:
@@ -99,8 +101,10 @@ def predict(trained_model, iteration):
         if i % 100 == 0:
             print("Finshed: " + str(i))
 
-    file1.write("Iteration: " + str(iteration))
-    file1.write("Number of masks: " + str(total_count_mask))
+    file1.write("Iteration: " + str(iteration) + "\n")
+    file1.write("Number of masks: " + str(total_count_mask) + "\n")
+    file1.write("Margin: " + str(margin) + "\n")
+    file1.write("\n")
     file1.close()
 
 
@@ -156,7 +160,7 @@ def getArea(box):
     return (box[2] - box[0] + 1) * (box[3] - box[1] + 1)
 
 
-# predict("Epoch-110-Loss-1.7577346393040247.pth", 0)
+predict("Epoch-110-Loss-1.7577346393040247.pth", 0)
 
 # if __name__ == "__main__":
 #     confusion_matrix()

@@ -1,0 +1,12 @@
+Iteration: 0
+Number of masks: 3741
+Margin: 0.05
+
+Iteration: 0
+Number of masks: 11264
+Margin: 0.15
+
+Iteration: 0
+Number of masks: 15362
+Margin: 0.2
+
