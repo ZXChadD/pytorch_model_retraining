@@ -18,3 +18,9 @@ Iteration: 0
 Number of masks: 58900
 Margin: 0.2
 
+Iteration: 0
+Number of masks: 63338
+
+Iteration: 0
+Number of masks: 63338
+
