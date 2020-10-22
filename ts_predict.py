@@ -33,7 +33,7 @@ def predict(trained_model, iteration):
 
     file1 = open("MaskFile.txt", "a")
 
-    margin = 0.05
+    margin = 0.2
 
     for i in range(len(dataset)):
         ####### initialise a writer to create pascal voc file #######
@@ -56,7 +56,7 @@ def predict(trained_model, iteration):
             y1 = boxes[x][1]
             x2 = boxes[x][2]
             y2 = boxes[x][3]
-            if 0.5 - margin <= probs[x] <= 0.5 + margin:
+            if probs[x] <= 0.3:
                 writer.addObject(name_of_object, x1, y1, x2, y2, masked=1)
                 total_count_mask += 1
             else:
@@ -103,7 +103,7 @@ def predict(trained_model, iteration):
 
     file1.write("Iteration: " + str(iteration) + "\n")
     file1.write("Number of masks: " + str(total_count_mask) + "\n")
-    file1.write("Margin: " + str(margin) + "\n")
+    # file1.write("Margin: " + str(margin) + "\n")
     file1.write("\n")
     file1.close()
 
