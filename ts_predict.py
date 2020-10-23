@@ -56,7 +56,7 @@ def predict(trained_model, iteration):
             y1 = boxes[x][1]
             x2 = boxes[x][2]
             y2 = boxes[x][3]
-            if probs[x] <= 0.4:
+            if probs[x] <= 0.2:
                 writer.addObject(name_of_object, x1, y1, x2, y2, masked=1)
                 total_count_mask += 1
             else:
