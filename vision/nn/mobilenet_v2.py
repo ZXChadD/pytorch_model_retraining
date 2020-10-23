@@ -102,8 +102,8 @@ class InvertedResidual(nn.Module):
 
 
 class MobileNetV2(nn.Module):
-    def __init__(self, n_class=1000, input_size=224, width_mult=1., dropout_ratio=0.5,
-                 use_batch_norm=True, onnx_compatible=False):
+    def __init__(self, n_class=1000, input_size=224, width_mult=1., dropout_ratio=0.6,
+                 use_batch_norm=True, onnx_compatible=False, is_test=False):
         super(MobileNetV2, self).__init__()
         block = InvertedResidual
         input_channel = 32
@@ -142,6 +142,9 @@ class MobileNetV2(nn.Module):
                                          use_batch_norm=use_batch_norm, onnx_compatible=onnx_compatible))
         # make it nn.Sequential
         self.features = nn.Sequential(*self.features)
+
+        if is_test:
+            dropout_ratio = 0
 
         # building classifier
         self.classifier = nn.Sequential(
