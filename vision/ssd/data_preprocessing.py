@@ -12,12 +12,12 @@ class TrainAugmentation:
         self.size = size
         self.augment = Compose([
             ConvertFromInts(),
-            PhotometricDistort(),
-            Expand(self.mean),
-            RandomSampleCrop(),
+            # PhotometricDistort(),
+            # Expand(self.mean),
+            # RandomSampleCrop(),
             # RandomMirror(),
             ToPercentCoords(),
-            Resize(self.size),
+            # Resize(self.size),
             SubtractMeans(self.mean),
             lambda img, boxes=None, labels=None, is_masked=None: (img / std, boxes, labels, is_masked),
             ToTensor(),

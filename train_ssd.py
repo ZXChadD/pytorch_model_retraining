@@ -51,6 +51,8 @@ parser.add_argument('--resume', default=None, type=str,
 parser.add_argument('--use_cuda', default=True, type=str2bool,
                     help='Use CUDA to train model')
 
+pretrained_model_path = "../models/mb2-ssd-lite-mp-0_686.pth"
+
 # Config parser
 import configparser
 config_file = configparser.ConfigParser()
