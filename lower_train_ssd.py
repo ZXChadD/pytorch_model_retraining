@@ -296,3 +296,7 @@ if __name__ == '__main__':
     new_FAR = eval_ssd.evaluate_ssd(min_file)
     logging.info(f"Copying file {min_file}.")
     # copyfile(min_file, "../models")
+
+    new_model_path = min_file
+    ts_predict.predict(new_model_path, iteration_count)
+    logging.info(f"Training ends")
