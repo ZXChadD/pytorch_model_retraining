@@ -225,4 +225,4 @@ def evaluate_ssd(trained_model):
     return FAR
 
 
-evaluate_ssd("Epoch-110-Loss-1.7577346393040247.pth")
+# evaluate_ssd("Epoch-110-Loss-1.7577346393040247.pth")
