@@ -51,18 +51,17 @@ class VOCDataset:
 
     def __getitem__(self, index):
         image_id = self.ids[index]
-        boxes, labels, is_masked, is_difficult = self._get_annotation(image_id)
+        boxes, labels, is_difficult = self._get_annotation(image_id)
 
         if not self.keep_difficult:
             boxes = boxes[is_difficult == 0]
             labels = labels[is_difficult == 0]
         image = self._read_image(image_id)
         if self.transform:
-            image, boxes, labels, is_masked = self.transform(image, boxes, labels, is_masked)
+            image, boxes, labels = self.transform(image, boxes, labels)
         if self.target_transform:
-            boxes, labels, is_masked = self.target_transform(boxes, labels, is_masked)
-
-        return image, boxes, labels, is_masked
+            boxes, labels = self.target_transform(boxes, labels)
+        return image, boxes, labels
 
     def get_image(self, index):
         image_id = self.ids[index]
@@ -92,8 +91,6 @@ class VOCDataset:
         boxes = []
         labels = []
         is_difficult = []
-        is_masked = []
-
         for object in objects:
             class_name = object.find('name').text.lower().strip()
             # we're only concerned with clases in our list
@@ -111,17 +108,8 @@ class VOCDataset:
                 is_difficult_str = object.find('difficult').text
                 is_difficult.append(int(is_difficult_str) if is_difficult_str else 0)
 
-                is_masked_str = object.find('masked')
-                if is_masked_str is None:
-                    is_masked.append(1)
-                elif int(is_masked_str.text) == 0:
-                    is_masked.append(1)
-                else:
-                    is_masked.append(0)
-
         return (np.array(boxes, dtype=np.float32),
                 np.array(labels, dtype=np.int64),
-                np.array(is_masked, dtype=np.int64),
                 np.array(is_difficult, dtype=np.uint8))
 
     def _read_image(self, image_id):
