@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import types
 from numpy import random
-import random
+import random as random_prob
 
 
 def intersect(box_a, box_b):
@@ -123,7 +123,7 @@ class RandomSaturation(object):
         assert self.lower >= 0, "contrast lower must be non-negative."
 
     def __call__(self, image, boxes=None, labels=None, is_masked=None):
-        if random.random() < 0.3:
+        if random_prob.random() < 0.3:
             image[:, :, 1] *= random.uniform(self.lower, self.upper)
 
         return image, boxes, labels, is_masked
@@ -135,7 +135,7 @@ class RandomHue(object):
         self.delta = delta
 
     def __call__(self, image, boxes=None, labels=None, is_masked=None):
-        if random.random() < 0.3:
+        if random_prob.random() < 0.3:
             image[:, :, 0] += random.uniform(-self.delta, self.delta)
             image[:, :, 0][image[:, :, 0] > 360.0] -= 360.0
             image[:, :, 0][image[:, :, 0] < 0.0] += 360.0
@@ -199,7 +199,7 @@ class RandomBrightness(object):
         self.delta = delta
 
     def __call__(self, image, boxes=None, labels=None, is_masked=None):
-        if random.random() < 0.3:
+        if random_prob.random() < 0.3:
             delta = random.uniform(-self.delta, self.delta)
             image += delta
         return image, boxes, labels, is_masked
