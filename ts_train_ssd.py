@@ -151,9 +151,9 @@ def test(loader, net, criterion, device):
 
 if __name__ == '__main__':
 
-    lowerbound_model = "../new_results/0-Epoch-134-Loss-1.9067794595445906.pth"
-    logging.info(f"Lowerbound detecting....")
-    ts_predict.predict(lowerbound_model, 0)
+    # lowerbound_model = "../new_results/0-Epoch-134-Loss-1.9067794595445906.pth"
+    # logging.info(f"Lowerbound detecting....")
+    # ts_predict.predict(lowerbound_model, 0)
 
     while True:
 
