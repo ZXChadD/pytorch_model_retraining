@@ -70,8 +70,10 @@ class VOCDataset:
     def _get_annotation(self, image_id):
         if self.iteration == -1:
             annotation_file = self.root / f"Annotations/{image_id}.xml"
+            print(annotation_file)
         else:
             annotation_file = self.root / f"{self.iteration}/{image_id}.xml"
+            print(annotation_file)
         objects = ET.parse(annotation_file).findall("object")
         boxes = []
         labels = []
