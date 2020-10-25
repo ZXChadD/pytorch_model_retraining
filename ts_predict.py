@@ -62,39 +62,7 @@ def predict(trained_model, iteration):
             else:
                 writer.addObject(name_of_object, x1, y1, x2, y2, masked=0)
 
-        # for x in range(len(probs)):
-        #     add_flag = 1
-        #     label_number = labels[x]
-        #     name_of_object = label_names[label_number]
-        #     x1 = boxes[x][0]
-        #     y1 = boxes[x][1]
-        #     x2 = boxes[x][2]
-        #     y2 = boxes[x][3]
-        #     current_label = [x1, y1, x2, y2]
-        #     detected_box = [name_of_object, probs[x], current_label]
-        #
-        #     if not all_labels:
-        #         all_labels.append(detected_box)
-        #         continue
-        #
-        #     for y in range(len(all_labels)):
-        #         if iou(all_labels[y][2], detected_box[2]) > 0.7 and all_labels[y][1] > detected_box[1]:
-        #             add_flag = 0
-        #         elif iou(all_labels[y][2], detected_box[2]) > 0.7 and all_labels[y][1] < detected_box[1]:
-        #             add_flag = 0
-        #             all_labels[y][0] = detected_box[0]
-        #             all_labels[y][1] = detected_box[1]
-        #             all_labels[y][2] = detected_box[2]
-        #
-        #     if add_flag == 1:
-        #         all_labels.append(detected_box)
-        #
-        # for each_object in all_labels:
-        #     writer.addObject(each_object[0], each_object[2][0], each_object[2][1], each_object[2][2], each_object[2][3])
-
         ####### save pascal voc file #######
-
-
         writer.save(
             '../data/train/' + str(iteration) + '/' + str(i) + '.xml')
 
@@ -106,7 +74,6 @@ def predict(trained_model, iteration):
     # file1.write("Margin: " + str(margin) + "\n")
     file1.write("\n")
     file1.close()
-
 
 
 def load_label_names():
@@ -158,7 +125,6 @@ def getUnionAreas(boxA, boxB, interArea=None):
 
 def getArea(box):
     return (box[2] - box[0] + 1) * (box[3] - box[1] + 1)
-
 
 # predict("Epoch-110-Loss-1.7577346393040247.pth", 0)
 
