@@ -176,6 +176,7 @@ if __name__ == '__main__':
         ####### Training dataset #######
         logging.info("Prepare training datasets.")
         datasets = []
+        print(args.datasets)
         for dataset_path in args.datasets:
             if dataset_path == "../data/expert":
                 dataset = VOCDataset(-1, dataset_path, transform=train_transform,
@@ -304,6 +305,7 @@ if __name__ == '__main__':
             new_model_path = min_file
             ts_predict.predict(new_model_path, iteration_count)
             logging.info(f"Iteration number: {iteration_count}.")
+            torch.cuda.empty_cache()
 
         elif current_FAR < new_FAR:
             logging.info(f"Training ends")
