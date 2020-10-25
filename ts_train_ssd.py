@@ -72,7 +72,7 @@ count = train_loop.getint("count")
 
 # Teacher Student Retraining Loop
 current_FAR = 100
-iteration_count = 0
+iteration_count = 1
 pretrained_model_path = "../models/mb2-ssd-lite-mp-0_686.pth"
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
