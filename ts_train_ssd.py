@@ -72,7 +72,7 @@ count = train_loop.getint("count")
 
 # Teacher Student Retraining Loop
 current_FAR = 100
-iteration_count = 0
+iteration_count = 1
 pretrained_model_path = "../models/mb2-ssd-lite-mp-0_686.pth"
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
@@ -301,7 +301,7 @@ if __name__ == '__main__':
         logging.info(f"Evaluating model {min_file}.")
         new_FAR = eval_ssd.evaluate_ssd(min_file)
         logging.info(f"Copying file {min_file}.")
-        copyfile(min_file, "../models")
+        # copyfile(min_file, "../models")
 
         if new_FAR < current_FAR:
             current_FAR = new_FAR
