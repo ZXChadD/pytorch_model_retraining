@@ -149,7 +149,7 @@ class RandomLightingNoise(object):
                       (2, 0, 1), (2, 1, 0))
 
     def __call__(self, image, boxes=None, labels=None, is_masked=None):
-        if random.randint(2):
+        if random_prob.random() < 0.3:
             swap = self.perms[random.randint(len(self.perms))]
             shuffle = SwapChannels(swap)  # shuffle channels
             image = shuffle(image)

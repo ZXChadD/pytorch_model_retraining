@@ -12,11 +12,11 @@ import eval_ssd
 import ts_predict
 from vision.utils.misc import str2bool, Timer, freeze_net_layers, store_labels
 from vision.ssd.ssd import MatchPrior
-from vision.ssd.mobilenet_v2_ssd_lite import create_mobilenetv2_ssd_lite
+from vision.ssd.mobilenet_v2_ssd_lite_t import create_mobilenetv2_ssd_lite
 from vision.datasets.ts_voc_dataset import VOCDataset
 from vision.nn.multibox_loss import MultiboxLoss
 from vision.ssd.config import mobilenetv1_ssd_config
-from vision.ssd.data_preprocessing import TrainAugmentation, TestTransform
+from vision.ssd.data_preprocessing_t import TrainAugmentation, TestTransform
 from shutil import copyfile
 
 parser = argparse.ArgumentParser(
