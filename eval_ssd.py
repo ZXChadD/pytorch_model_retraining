@@ -30,7 +30,7 @@ def evaluate_ssd(trained_model):
 
     predictor = create_mobilenetv2_ssd_lite_predictor(net, nms_method="hard", device=DEVICE)
 
-    while int(PD) != 0.60:
+    while round(PD, 2) != 0.60:
         ground_truths = 0
         all_positives = 0
         all_false_positives = 0
