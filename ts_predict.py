@@ -42,21 +42,16 @@ def predict(trained_model, iteration):
         image = dataset.get_image(i)
         boxes, labels, probs = predictor.predict(image)
 
-        probs = probs.numpy()
-        labels = labels.numpy()
-        boxes = boxes.numpy()
+        boxes_specific, labels_specific, probs_specific = retrieve_specific_box(boxes, labels, probs)
 
-        all_labels = []
-
-        for x in range(len(probs)):
-            add_flag = 1
-            label_number = labels[x]
+        for x in range(len(probs_specific)):
+            label_number = labels_specific[x]
             name_of_object = label_names[label_number]
-            x1 = boxes[x][0]
-            y1 = boxes[x][1]
-            x2 = boxes[x][2]
-            y2 = boxes[x][3]
-            if probs[x] <= 0.4:
+            x1 = boxes_specific[x][0]
+            y1 = boxes_specific[x][1]
+            x2 = boxes_specific[x][2]
+            y2 = boxes_specific[x][3]
+            if probs_specific[x] <= 0.4:
                 writer.addObject(name_of_object, x1, y1, x2, y2, masked=1)
                 total_count_mask += 1
             else:
@@ -126,7 +121,45 @@ def getUnionAreas(boxA, boxB, interArea=None):
 def getArea(box):
     return (box[2] - box[0] + 1) * (box[3] - box[1] + 1)
 
-# predict("Epoch-110-Loss-1.7577346393040247.pth", 0)
+
+####### Retrieve specific boxes #######
+def retrieve_specific_box(boxes, labels, probs):
+    all_objects = []
+    new_boxes = []
+    new_labels = []
+    new_probs = []
+    probs = probs.numpy()
+    labels = labels.numpy()
+    boxes = boxes.numpy()
+
+    for x in range(len(probs)):
+        add_flag = 1
+
+        if not all_objects:
+            all_objects.append([boxes[x], labels[x], probs[x]])
+            add_flag = 0
+        else:
+            for y in all_objects:
+                if iou(boxes[x], y[0]) > 0.5 and probs[x] < y[2]:
+                    add_flag = 0
+                elif iou(boxes[x], y[0]) > 0.5 and probs[x] > y[2]:
+                    y[0] = boxes[x]
+                    y[1] = labels[x]
+                    y[2] = probs[x]
+                    add_flag = 0
+
+        if add_flag == 1:
+            all_objects.append([boxes[x], labels[x], probs[x]])
+
+    for objects in all_objects:
+        new_boxes.append(objects[0].tolist())
+        new_labels.append(objects[1])
+        new_probs.append(objects[2])
+
+    return new_boxes, new_labels, new_probs
+
+
+# predict("0-Epoch-131-Loss-0.9376572600582189.pth", 0)
 
 # if __name__ == "__main__":
 #     confusion_matrix()
