@@ -151,7 +151,9 @@ def test(loader, net, criterion, device):
 
 if __name__ == '__main__':
 
+    logging.info(f"Evaluating Lowerbound model")
     lowerbound_model = "../new_results/0-Epoch-112-Loss-1.6827886732001054.pth"
+    eval_ssd.evaluate_ssd(lowerbound_model)
     logging.info(f"Lowerbound detecting....")
     ts_predict.predict(lowerbound_model, iteration_count)
 
