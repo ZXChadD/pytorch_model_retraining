@@ -42,7 +42,7 @@ def evaluate_ssd(trained_model):
 
         if PD == 0:
             confidence_level = 0
-        elif PD < 0.90:
+        elif PD < 0.60:
             high = confidence_level
             confidence_level = (high + low) / 2
         else:
