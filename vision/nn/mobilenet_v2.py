@@ -102,7 +102,7 @@ class InvertedResidual(nn.Module):
 
 
 class MobileNetV2(nn.Module):
-    def __init__(self, n_class=1000, input_size=224, width_mult=1., dropout_ratio=0.7,
+    def __init__(self, n_class=1000, input_size=224, width_mult=1., dropout_ratio=0,
                  use_batch_norm=True, onnx_compatible=False, is_test=False):
         super(MobileNetV2, self).__init__()
         block = InvertedResidual
